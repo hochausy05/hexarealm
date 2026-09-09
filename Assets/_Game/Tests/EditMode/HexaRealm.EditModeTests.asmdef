@@ -3,7 +3,8 @@
   "rootNamespace": "HexaRealm.Tests.EditMode",
   "references": [
     "HexaRealm.Combat",
-    "HexaRealm.Player"
+    "HexaRealm.Player",
+    "HexaRealm.Enemy"
   ],
   "includePlatforms": [
     "Editor"

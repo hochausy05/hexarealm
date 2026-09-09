@@ -126,6 +126,22 @@ MẪU ENTRY:
 Chỉ giữ các heading thực sự có nội dung.
 -->
 
+## 2026-09-09 — Task 09 enemy data and power-budget foundation
+
+### Added
+- Thêm `EnemyData` ScriptableObject với Rank F–S, HP, ATK, DEF, Speed và SoulReward là authoring data duy nhất cho base combat stats của enemy.
+- Thêm power score weighted additive chỉ dùng HP/ATK/DEF/Speed, cùng `EnemyPowerBudgetProfile` có weight/range cấu hình và rank validation thuần, không tự mutate Rank.
+- Thêm EditMode tests cho data validation, đóng góp từng combat stat, SoulReward/declared Rank không ảnh hưởng score, profile chưa cấu hình, invalid weights và rank budget validation idempotent.
+
+### Notes
+- SoulReward là dữ liệu riêng cho task sau; ngưỡng Rank F–S và weight cân bằng cuối vẫn chưa được chốt. Profile mặc định tắt validation.
+
+### Main files
+- `Assets/_Game/Scripts/Enemy/EnemyData.cs`
+- `Assets/_Game/Scripts/Enemy/EnemyPowerBudget.cs`
+- `Assets/_Game/Scripts/Enemy/EnemyPowerBudgetProfile.cs`
+- `Assets/_Game/Tests/EditMode/EnemyDataTests.cs`
+
 ## 2026-09-09 — Task 08 mouse-aim correction
 
 ### Fixed
