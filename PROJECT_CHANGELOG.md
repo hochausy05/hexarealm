@@ -1,0 +1,288 @@
+# PROJECT_CHANGELOG — Lịch sử thay đổi HexaRealm
+
+> **Mục đích:** Tóm tắt các thay đổi quan trọng của project sau từng task/prompt để người dùng, AI và Codex có thể nhanh chóng hiểu project hiện đang có gì mà không cần quét lại toàn bộ repository.
+>
+> **Không dùng file này thay cho Git history.** Đây là bản tóm tắt cấp cao về tính năng, công nghệ và architecture.
+
+---
+
+# Cách sử dụng
+
+Sau mỗi task có thay đổi đáng kể, AI/Codex phải thêm một entry mới ở đầu phần **Change History**.
+
+Chỉ ghi:
+- tính năng mới;
+- hệ thống mới;
+- package/công nghệ mới;
+- architecture mới;
+- Project Settings quan trọng;
+- Scene/Prefab quan trọng;
+- thay đổi gameplay đáng kể;
+- bug fix đáng chú ý.
+
+Không ghi:
+- typo;
+- formatting;
+- comment;
+- thay đổi rất nhỏ không ảnh hưởng project.
+
+---
+
+# Trạng thái hiện tại
+
+## Project
+
+```text
+Name: HexaRealm
+Engine: Unity 6
+Template: Universal 2D
+Genre: 2D Top-down Fantasy Action RPG
+Art: Pixel Art
+Current Region Focus: HumanRealm / Nhân Giới
+```
+
+## Source of truth
+
+- `GAME_DESIGN_CORE.md`
+- `SYSTEM_AI.md`
+- `PROJECT_CHANGELOG.md`
+
+## Gameplay nền tảng đã chốt
+
+- Không có Character Level.
+- Dùng Soul để nâng chỉ số tại Soul Pillar.
+- 5 Player Stats:
+  - Vitality / HP
+  - Attack / ATK
+  - Defense / DEF
+  - Agility / AGI
+  - Rage / RAGE
+- Rage tăng Crit + Attack Speed.
+- Upgrade Cap mở rộng sau Main Boss từng vùng.
+- Người chơi được tự do farm.
+- Enemy Rank: S → F.
+- Rank quái dựa trên HP + ATK + DEF + Speed.
+- Nhân Giới ban đầu chủ yếu dùng Rank F và E.
+- Optional Boss không bắt buộc.
+- Main Boss mở vùng tiếp theo và Upgrade Cap.
+- Weapon scope hiện tại: Melee Slash only.
+- Player visual:
+  - Body
+  - WeaponSprite
+  - SlashVFX
+
+---
+
+# Công nghệ / kiến trúc hiện đang dùng
+
+## Unity
+
+- Unity 6
+- Universal 2D / URP 2D
+- Orthographic top-down direction
+- Tilemap dự kiến cho world
+- Rule Tile khi phù hợp
+- Prefab
+- ScriptableObject
+- Component-based architecture
+- Data-driven design
+
+## Pixel Art Standard dự kiến
+
+```text
+Base Tile: 32x32 px
+Pixels Per Unit: 32
+Filter Mode: Point / No Filter
+Compression: None
+```
+
+---
+
+# Change History
+
+<!--
+MẪU ENTRY:
+
+## YYYY-MM-DD — [Tên task ngắn]
+
+### Added
+- ...
+
+### Changed
+- ...
+
+### Fixed
+- ...
+
+### Technology / Packages
+- ...
+
+### Main files
+- `Assets/...`
+
+### Notes
+- ...
+
+Chỉ giữ các heading thực sự có nội dung.
+-->
+
+## 2026-09-09 — Player stats foundation
+
+### Added
+- Thêm `PlayerStats` với 5 core stats: Vitality, Attack, Defense, Agility và Rage.
+- Tách riêng Base, Upgrade và Equipment modifier; Final Stat luôn là giá trị derived có minimum validation.
+- Gắn `PlayerStats` vào Player prefab với các base value prototype chưa phải balancing cuối.
+
+### Main files
+- `Assets/_Game/Scripts/Player/PlayerStats.cs`
+- `Assets/_Game/Prefabs/Player/Player.prefab`
+
+### Notes
+- API modifier dùng set aggregate value để tránh double-apply; các case calculation, repeated set, reset và minimum clamp đã pass.
+- Chưa tích hợp stat vào Health, combat, movement hoặc dash.
+
+## 2026-09-09 — Player dash / dodge prototype
+
+### Added
+- Thêm `PlayerDash`, đọc `Gameplay/Dash` và dash theo hướng input hiện tại hoặc hướng di chuyển hợp lệ gần nhất.
+- Thêm dash duration và cooldown chống spam với các thông số prototype chỉnh được trong Inspector.
+
+### Changed
+- `PlayerController` expose hướng di chuyển dạng read-only và tạm ngừng ghi velocity trong lúc `PlayerDash` giữ quyền điều khiển Rigidbody2D.
+- Player Rigidbody2D dùng Continuous Collision Detection để giảm nguy cơ xuyên collider khi dash.
+
+### Main files
+- `Assets/_Game/Scripts/Player/PlayerDash.cs`
+- `Assets/_Game/Scripts/Player/PlayerController.cs`
+- `Assets/_Game/Prefabs/Player/Player.prefab`
+
+### Notes
+- Task 04 đã được người dùng xác minh trong Play Mode. Task 05 chờ manual playtest trước khi đánh dấu DONE.
+
+## 2026-09-09 — Camera follow và top-down Y-sorting foundation
+
+### Added
+- Thêm `CameraFollow2D` theo target trong `LateUpdate`, hỗ trợ offset và smoothing nhẹ trong khi giữ nguyên camera Z.
+- Thêm `TopDownSorting` tái sử dụng, tính `SortingGroup.sortingOrder` từ world Y của root hoặc `SortPoint` riêng.
+- Cấu hình Player dùng `SortingGroup` trên layer `Characters` và thêm các sorting probe placeholder trong `TechnicalTest`, gồm phần top trên layer `AboveCharacters`.
+
+### Main files
+- `Assets/_Game/Scripts/Core/CameraFollow2D.cs`
+- `Assets/_Game/Scripts/Core/TopDownSorting.cs`
+- `Assets/_Game/Prefabs/Player/Player.prefab`
+- `Assets/_Game/Scenes/Test/TechnicalTest.unity`
+
+### Notes
+- Task 04 giữ trạng thái IN PROGRESS cho đến khi camera và thứ tự render được người dùng xác minh trong Play Mode.
+
+## 2026-09-09 — Player foundation và movement
+
+### Added
+- Thêm `PlayerController` đọc `Gameplay/Move` bằng Input System mới và di chuyển `Rigidbody2D` theo 8 hướng với tốc độ chéo được chuẩn hóa.
+- Tạo prefab `Player` gồm root Player, child `Body`, placeholder sprite, `Rigidbody2D`, `CapsuleCollider2D` và movement speed chỉnh được trong Inspector.
+- Đặt Player prefab gần origin trong scene `TechnicalTest` để kiểm thử kỹ thuật.
+
+### Main files
+- `Assets/_Game/Scripts/Player/PlayerController.cs`
+- `Assets/_Game/Prefabs/Player/Player.prefab`
+- `Assets/_Game/Scenes/Test/TechnicalTest.unity`
+
+### Notes
+- Rigidbody2D dùng Dynamic body, Gravity Scale 0, Interpolate và Freeze Rotation Z; chưa thêm camera follow, animation, dash, combat hay các gameplay system ngoài phạm vi.
+
+## 2026-09-09 — Thiết lập nền kỹ thuật Unity 2D
+
+### Added
+- Tạo `HexaRealmInputActions` với action map `Gameplay` cho Move, Attack, Dash và Interact bằng keyboard, mouse và gamepad.
+- Thêm Sorting Layers: Ground, GroundDetails, Environment, Characters, AboveCharacters, VFX và UI.
+- Thêm Unity Layers: Player, Enemy, NPC, World, Interactable, PlayerHitbox và EnemyHitbox.
+- Tạo scene `TechnicalTest` với Main Camera Orthographic, World, Grid và các Tilemap Ground, GroundDetails, Collision.
+
+### Technology / Packages
+- Sử dụng Unity Input System `1.20.0` đã có sẵn; không cài package mới.
+
+### Main files
+- `Assets/_Game/Data/Input/HexaRealmInputActions.inputactions`
+- `Assets/_Game/Scenes/Test/TechnicalTest.unity`
+- `ProjectSettings/TagManager.asset`
+
+### Notes
+- Active Input Handling đã dùng Input System mới; không thay Render Pipeline.
+
+---
+
+## 2026-09-09 — Thiết lập cấu trúc thư mục ban đầu
+
+### Added
+- Tạo cây thư mục `Assets/_Game` cho nội dung do HexaRealm tự phát triển.
+- Phân tách các khu vực cho Art, Animations, Audio, Data, Materials, Prefabs, Scenes, Scripts, Tilemaps và Tests.
+- Chuẩn bị các thư mục riêng cho vùng `HumanRealm` và các nhóm asset/gameplay mở rộng sau này.
+
+### Main files
+- `Assets/_Game/`
+
+### Notes
+- Chỉ thay đổi cấu trúc folder; chưa tạo gameplay, script, prefab, scene, ScriptableObject hay package mới.
+
+---
+
+## 2026-09-09 — Khởi tạo project
+
+### Added
+- Tạo Unity project `HexaRealm`.
+- Sử dụng template Universal 2D.
+- Thêm `GAME_DESIGN_CORE.md` làm tài liệu thiết kế nguồn.
+- Thêm `SYSTEM_AI.md` để quy định cách AI/Codex làm việc.
+- Thêm `PROJECT_CHANGELOG.md` để theo dõi thay đổi cấp cao của project.
+
+### Technology / Packages
+- Unity 6.
+- Universal 2D / URP 2D mặc định từ template.
+
+### Notes
+- Project đang ở giai đoạn thiết lập ban đầu.
+- Chưa triển khai gameplay.
+- Ưu tiên hiện tại là hoàn thiện Nhân Giới trước khi mở rộng sang các vùng khác.
+
+---
+
+# Mẫu cho task tiếp theo
+
+Khi hoàn thành một task, thêm entry mới **phía trên entry cũ**:
+
+```text
+## YYYY-MM-DD — Tên task
+
+### Added
+- Hệ thống/tính năng mới.
+
+### Changed
+- Hành vi hoặc architecture đã thay đổi.
+
+### Fixed
+- Bug quan trọng đã sửa.
+
+### Technology / Packages
+- Package/công nghệ mới nếu có.
+
+### Main files
+- Các file chính liên quan.
+
+### Notes
+- Lưu ý ngắn nếu cần.
+```
+
+---
+
+# Quy tắc dành cho AI/Codex
+
+1. Đọc file này để biết project hiện có gì trước khi tạo một hệ thống đã tồn tại.
+2. Không dùng changelog làm source of truth cho gameplay; dùng `GAME_DESIGN_CORE.md`.
+3. Không xóa lịch sử cũ.
+4. Không rewrite toàn bộ file sau mỗi task.
+5. Chỉ thêm entry mới.
+6. Entry phải ngắn và mang tính tổng quan.
+7. Không paste diff code vào đây.
+8. Không paste nguyên prompt vào đây.
+9. Nếu một task không có thay đổi đáng kể, không cần tạo entry.
+10. Khi báo cáo cuối task, nói rõ có cập nhật changelog hay không.
