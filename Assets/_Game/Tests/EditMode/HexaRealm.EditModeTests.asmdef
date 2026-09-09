@@ -4,7 +4,8 @@
   "references": [
     "HexaRealm.Combat",
     "HexaRealm.Player",
-    "HexaRealm.Enemy"
+    "HexaRealm.Enemy",
+    "HexaRealm.Progression"
   ],
   "includePlatforms": [
     "Editor"

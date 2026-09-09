@@ -1,10 +1,7 @@
 {
-  "name": "HexaRealm.Enemy",
-  "rootNamespace": "HexaRealm.Enemy",
-  "references": [
-    "HexaRealm.Combat",
-    "HexaRealm.Progression"
-  ],
+  "name": "HexaRealm.Progression",
+  "rootNamespace": "HexaRealm.Progression",
+  "references": [],
   "includePlatforms": [],
   "excludePlatforms": [],
   "allowUnsafeCode": false,

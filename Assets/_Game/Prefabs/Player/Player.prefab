@@ -19,6 +19,7 @@ GameObject:
   - component: {fileID: 3371355901857076033}
   - component: {fileID: 3371355901857076034}
   - component: {fileID: 3371355901857076035}
+  - component: {fileID: 3371355901857076036}
   m_Layer: 8
   m_Name: Player
   m_TagString: Untagged
@@ -259,6 +260,19 @@ MonoBehaviour:
   criticalMultiplier: 2
   attackSpeedPerRage: 0.05
   slashVFXDuration: 0.12
+--- !u!114 &3371355901857076036
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 330569631432920027}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56867c4b0d714e9ea938aed5f6b0459d, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: HexaRealm.Progression::HexaRealm.Progression.PlayerSoulWallet
+  currentSouls: 0
 --- !u!1 &2079261062219425829
 GameObject:
   m_ObjectHideFlags: 0

@@ -126,6 +126,16 @@ MẪU ENTRY:
 Chỉ giữ các heading thực sự có nội dung.
 -->
 
+## 2026-09-10 — Soul reward and player Soul wallet foundation
+
+### Added
+- Thêm `PlayerSoulWallet` runtime với API Add / CanAfford / TrySpend, event thay đổi Soul và bảo vệ overflow.
+- Thêm `EnemySoulReward`, trao Soul trực tiếp khi `Health.Died` từ `EnemyData.SoulReward`, một lần cho mỗi enemy life.
+- Gắn wallet vào `Player` và reward component vào `Slime_F`; thêm EditMode tests cho wallet, reward và prefab.
+
+### Notes
+- Chưa có Soul Pillar, Soul UI hoặc save/load.
+
 ## 2026-09-09 — Task 10 basic enemy AI and Slime Rank F prototype
 
 ### Added

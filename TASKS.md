@@ -375,7 +375,7 @@ Idle
 
 ---
 
-## ⬜ TASK 11 — Soul Drop + Player Soul Wallet
+## 🟡 TASK 11 — Soul Drop + Player Soul Wallet
 
 **Độ nặng:** Vừa  
 **Model:** GPT-5.6 Sol  
