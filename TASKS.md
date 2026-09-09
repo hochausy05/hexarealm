@@ -317,7 +317,7 @@ Melee Slash only.
 
 # 6. Enemy + Soul Phase
 
-## ⬜ TASK 09 — Enemy Data + Rank Foundation
+## ✅ TASK 09 — Enemy Data + Rank Foundation
 
 **Độ nặng:** Vừa  
 **Model:** GPT-5.6 Sol  
@@ -345,7 +345,7 @@ Behavior không tính Rank.
 
 ---
 
-## ⬜ TASK 10 — Basic Enemy AI
+## 🟡 TASK 10 — Basic Enemy AI
 
 **Độ nặng:** Nặng  
 **Model:** GPT-5.6 Sol  

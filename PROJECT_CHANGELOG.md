@@ -126,6 +126,26 @@ MẪU ENTRY:
 Chỉ giữ các heading thực sự có nội dung.
 -->
 
+## 2026-09-09 — Task 10 basic enemy AI and Slime Rank F prototype
+
+### Added
+- Thêm enemy runtime foundation: một `EnemyRuntime` sở hữu `EnemyData`; `EnemyHealth` tái sử dụng `Health` và áp Defense qua `DamageCalculator`.
+- Thêm `BasicEnemyAI` với Idle, Chase, Attack, Return và Dead; có detection/attack hysteresis, home/leash và dừng hoàn toàn khi chết.
+- Thêm `EnemyMeleeAttack` query một lần mỗi attack, cooldown và raw damage tới Player receiver.
+- Thêm `Slime_F` Rank F placeholder prefab/data và một instance trong `TechnicalTest`, gồm Rigidbody2D, physical collider, EnemyHitbox và top-down sorting.
+- Thêm EditMode tests cho enemy health initialization, defense, immutable data, death idempotency, attack data source và prefab foundation.
+
+### Main files
+- `Assets/_Game/Scripts/Enemy/EnemyRuntime.cs`
+- `Assets/_Game/Scripts/Enemy/EnemyHealth.cs`
+- `Assets/_Game/Scripts/Enemy/BasicEnemyAI.cs`
+- `Assets/_Game/Scripts/Enemy/EnemyMeleeAttack.cs`
+- `Assets/_Game/Data/Enemies/HumanRealm/Slime_F.asset`
+- `Assets/_Game/Prefabs/Enemies/HumanRealm/Slime_F.prefab`
+
+### Notes
+- Slime values are prototype only; Task 10 remains IN PROGRESS until the Play Mode checklist is verified.
+
 ## 2026-09-09 — Task 09 enemy data and power-budget foundation
 
 ### Added

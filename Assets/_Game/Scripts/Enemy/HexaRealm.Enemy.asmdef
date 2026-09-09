@@ -1,7 +1,9 @@
 {
   "name": "HexaRealm.Enemy",
   "rootNamespace": "HexaRealm.Enemy",
-  "references": [],
+  "references": [
+    "HexaRealm.Combat"
+  ],
   "includePlatforms": [],
   "excludePlatforms": [],
   "allowUnsafeCode": false,
