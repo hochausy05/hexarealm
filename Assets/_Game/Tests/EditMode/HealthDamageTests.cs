@@ -233,6 +233,8 @@ namespace HexaRealm.Tests.EditMode
             Assert.That(prefab.GetComponent<PlayerController>(), Is.Not.Null);
             Assert.That(prefab.GetComponent<PlayerDash>(), Is.Not.Null);
             Assert.That(prefab.GetComponent<PlayerStats>(), Is.Not.Null);
+            Assert.That(prefab.GetComponent<HexaRealm.Progression.PlayerUpgradeProgression>(), Is.Not.Null);
+            Assert.That(prefab.GetComponent<HexaRealm.Interaction.PlayerInteractor>(), Is.Not.Null);
             Assert.That(prefab.GetComponent<Rigidbody2D>(), Is.Not.Null);
             Assert.That(prefab.GetComponent<Collider2D>(), Is.Not.Null);
             Assert.That(prefab.GetComponent<SortingGroup>(), Is.Not.Null);

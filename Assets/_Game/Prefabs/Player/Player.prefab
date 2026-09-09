@@ -20,6 +20,8 @@ GameObject:
   - component: {fileID: 3371355901857076034}
   - component: {fileID: 3371355901857076035}
   - component: {fileID: 3371355901857076036}
+  - component: {fileID: 3371355901857076037}
+  - component: {fileID: 3371355901857076038}
   m_Layer: 8
   m_Name: Player
   m_TagString: Untagged
@@ -273,6 +275,50 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier: HexaRealm.Progression::HexaRealm.Progression.PlayerSoulWallet
   currentSouls: 0
+--- !u!114 &3371355901857076037
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 330569631432920027}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f6f357185894a519866f95af7af9561, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: HexaRealm.Progression::HexaRealm.Progression.PlayerUpgradeProgression
+  playerStats: {fileID: 3371355901857076032}
+  soulWallet: {fileID: 3371355901857076036}
+  currentUpgradeCap: 10
+  baseSoulCost: 1
+  costGrowthPerUpgrade: 1
+  vitalityPerUpgrade: 1
+  attackPerUpgrade: 1
+  defensePerUpgrade: 1
+  agilityPerUpgrade: 1
+  ragePerUpgrade: 1
+  vitalityUpgradeCount: 0
+  attackUpgradeCount: 0
+  defenseUpgradeCount: 0
+  agilityUpgradeCount: 0
+  rageUpgradeCount: 0
+--- !u!114 &3371355901857076038
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 330569631432920027}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 339e9d737db04f30a66b08d6d32f6a2d, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: HexaRealm.Interaction::HexaRealm.Interaction.PlayerInteractor
+  inputActions: {fileID: -944628639613478452, guid: e1f0ac56a2257e842b7a4a5dd2ded771, type: 3}
+  interactionRadius: 1.25
+  interactableLayerMask:
+    serializedVersion: 2
+    m_Bits: 4096
 --- !u!1 &2079261062219425829
 GameObject:
   m_ObjectHideFlags: 0

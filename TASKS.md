@@ -375,7 +375,7 @@ Idle
 
 ---
 
-## 🟡 TASK 11 — Soul Drop + Player Soul Wallet
+## ✅ TASK 11 — Soul Drop + Player Soul Wallet
 
 **Độ nặng:** Vừa  
 **Model:** GPT-5.6 Sol  
@@ -391,7 +391,7 @@ Enemy chết → Player nhận Soul.
 
 ---
 
-## ⬜ TASK 12 — Soul Pillar + Upgrade System
+## 🟡 TASK 12 — Soul Pillar + Upgrade System
 
 **Độ nặng:** Nặng  
 **Model:** GPT-5.6 Sol  

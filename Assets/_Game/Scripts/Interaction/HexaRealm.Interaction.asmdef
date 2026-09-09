@@ -1,12 +1,8 @@
 {
-  "name": "HexaRealm.Progression",
-  "rootNamespace": "HexaRealm.Progression",
+  "name": "HexaRealm.Interaction",
+  "rootNamespace": "HexaRealm.Interaction",
   "references": [
-    "HexaRealm.Player",
-    "HexaRealm.Interaction",
-    "Unity.InputSystem",
-    "Unity.TextMeshPro",
-    "Unity.ugui"
+    "Unity.InputSystem"
   ],
   "includePlatforms": [],
   "excludePlatforms": [],

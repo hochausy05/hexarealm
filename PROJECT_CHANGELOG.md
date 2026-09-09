@@ -126,6 +126,18 @@ MẪU ENTRY:
 Chỉ giữ các heading thực sự có nội dung.
 -->
 
+## 2026-09-10 — Soul Pillar and player upgrade progression prototype
+
+### Added
+- Thêm `PlayerUpgradeProgression`: năm upgrade count, global Upgrade Cap, aggregate modifier idempotent và transaction Soul atomic.
+- Thêm formula Soul cost prototype tập trung (`1 + total upgrades`), cùng EditMode coverage cho cost, cap, transaction, event và re-sync.
+- Thêm `PlayerInteractor`, `IInteractable`, `SoulPillar` placeholder và panel uGUI/TMP runtime tối thiểu để nâng năm stat tại pillar.
+- Gắn progression/interactor vào Player và đặt SoulPillar trong `TechnicalTest`.
+
+### Notes
+- Cap 10, cost base/growth 1 và mỗi stat +1/point chỉ là prototype; final balancing chưa chốt.
+- Task 12 giữ IN PROGRESS đến khi manual Soul → Pillar → Upgrade được xác minh trong Play Mode.
+
 ## 2026-09-10 — Soul reward and player Soul wallet foundation
 
 ### Added
