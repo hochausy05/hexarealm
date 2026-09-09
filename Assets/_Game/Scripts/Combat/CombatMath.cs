@@ -28,10 +28,19 @@ namespace HexaRealm.Combat
             float finalRage,
             float criticalChancePerRage)
         {
+            return CalculateCriticalChance(baseCriticalChance, finalRage, criticalChancePerRage, 0f);
+        }
+
+        public static float CalculateCriticalChance(
+            float baseCriticalChance,
+            float finalRage,
+            float criticalChancePerRage,
+            float weaponCritBonus)
+        {
             double baseChance = IsFinite(baseCriticalChance) ? baseCriticalChance : 0f;
             double rage = SanitizeNonNegative(finalRage);
             double chancePerRage = SanitizeNonNegative(criticalChancePerRage);
-            double chance = baseChance + rage * chancePerRage;
+            double chance = baseChance + rage * chancePerRage + SanitizeNonNegative(weaponCritBonus);
 
             if (double.IsNaN(chance))
             {
@@ -46,6 +55,15 @@ namespace HexaRealm.Combat
             float finalRage,
             float attackSpeedPerRage)
         {
+            return CalculateAttackInterval(baseAttackInterval, finalRage, attackSpeedPerRage, 1f);
+        }
+
+        public static float CalculateAttackInterval(
+            float baseAttackInterval,
+            float finalRage,
+            float attackSpeedPerRage,
+            float weaponAttackSpeedMultiplier)
+        {
             if (!IsFinite(baseAttackInterval) || baseAttackInterval <= 0f)
             {
                 return MinimumAttackInterval;
@@ -53,7 +71,10 @@ namespace HexaRealm.Combat
 
             double rage = SanitizeNonNegative(finalRage);
             double speedPerRage = SanitizeNonNegative(attackSpeedPerRage);
-            double denominator = 1d + rage * speedPerRage;
+            double weaponMultiplier = IsFinite(weaponAttackSpeedMultiplier) && weaponAttackSpeedMultiplier > 0f
+                ? weaponAttackSpeedMultiplier
+                : 1d;
+            double denominator = (1d + rage * speedPerRage) * weaponMultiplier;
             double interval = baseAttackInterval / denominator;
 
             if (double.IsNaN(interval) || double.IsInfinity(interval) || interval <= 0d)
@@ -62,6 +83,12 @@ namespace HexaRealm.Combat
             }
 
             return Mathf.Max(MinimumAttackInterval, (float)interval);
+        }
+
+        public static float CalculateMeleeReach(float baseReach, float weaponRangeBonus)
+        {
+            double reach = SanitizeNonNegative(baseReach) + SanitizeNonNegative(weaponRangeBonus);
+            return reach >= float.MaxValue ? float.MaxValue : (float)reach;
         }
 
         private static float SanitizeNonNegative(float value)

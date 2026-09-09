@@ -22,6 +22,7 @@ GameObject:
   - component: {fileID: 3371355901857076036}
   - component: {fileID: 3371355901857076037}
   - component: {fileID: 3371355901857076038}
+  - component: {fileID: 3371355901857076039}
   m_Layer: 8
   m_Name: Player
   m_TagString: Untagged
@@ -249,6 +250,7 @@ MonoBehaviour:
   playerStats: {fileID: 3371355901857076032}
   playerHealth: {fileID: 3371355901857076034}
   playerDash: {fileID: 4420697384272861602}
+  weaponSpriteTransform: {fileID: 510000002}
   slashVFX: {fileID: 520000001}
   gameplayCamera: {fileID: 0}
   attackOffset: 0.75
@@ -302,6 +304,21 @@ MonoBehaviour:
   defenseUpgradeCount: 0
   agilityUpgradeCount: 0
   rageUpgradeCount: 0
+--- !u!114 &3371355901857076039
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 330569631432920027}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b5d7f9a1c2e4d6081f3a5b7c9d0e246, type: 3}
+  m_Name: ""
+  m_EditorClassIdentifier: HexaRealm.Equipment::HexaRealm.Equipment.PlayerEquipment
+  playerStats: {fileID: 3371355901857076032}
+  weaponSpriteRenderer: {fileID: 510000003}
+  startingWeapon: {fileID: 11400000, guid: 5e7f9012a3b4c5d6e7f8091a2b3c4d56, type: 2}
 --- !u!114 &3371355901857076038
 MonoBehaviour:
   m_ObjectHideFlags: 0

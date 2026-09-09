@@ -19,6 +19,7 @@ namespace HexaRealm.Player
         [SerializeField] private PlayerStats playerStats;
         [SerializeField] private PlayerHealth playerHealth;
         [SerializeField] private PlayerDash playerDash;
+        [SerializeField] private Transform weaponSpriteTransform;
         [SerializeField] private GameObject slashVFX;
         [SerializeField] private Camera gameplayCamera;
 
@@ -37,6 +38,9 @@ namespace HexaRealm.Player
 
         private InputAction attackAction;
         private InputAction pointAction;
+        private IWeaponCombatModifiers weaponCombatModifiers;
+        private SpriteRenderer slashVFXRenderer;
+        private Sprite defaultSlashVFXSprite;
         private float nextAttackTime;
         private float slashVFXEndTime;
 
@@ -47,6 +51,8 @@ namespace HexaRealm.Player
         private void Awake()
         {
             ResolveReferences();
+            slashVFXRenderer = slashVFX != null ? slashVFX.GetComponent<SpriteRenderer>() : null;
+            defaultSlashVFXSprite = slashVFXRenderer != null ? slashVFXRenderer.sprite : null;
 
             if (inputActions == null)
             {
@@ -96,6 +102,8 @@ namespace HexaRealm.Player
             {
                 TryStartAttack();
             }
+
+            UpdateWeaponVisualAim();
         }
 
         private bool TryStartAttack()
@@ -120,7 +128,8 @@ namespace HexaRealm.Player
             float criticalChance = CombatMath.CalculateCriticalChance(
                 baseCriticalChance,
                 finalRage,
-                criticalChancePerRage);
+                criticalChancePerRage,
+                GetWeaponCombatModifiers().CritBonus);
 
             // One roll belongs to the whole swing, so every receiver gets the same crit result.
             LastSwingWasCritical = criticalChance >= 1f
@@ -133,7 +142,8 @@ namespace HexaRealm.Player
             float attackInterval = CombatMath.CalculateAttackInterval(
                 baseAttackInterval,
                 finalRage,
-                attackSpeedPerRage);
+                attackSpeedPerRage,
+                GetWeaponCombatModifiers().AttackSpeedMultiplier);
             nextAttackTime = Time.time + attackInterval;
 
             PerformDamageQuery(attackDirection, rawDamage);
@@ -196,7 +206,8 @@ namespace HexaRealm.Player
 
         private void PerformDamageQuery(Vector2 attackDirection, float rawDamage)
         {
-            Vector2 center = (Vector2)transform.position + attackDirection * attackOffset;
+            float effectiveReach = CombatMath.CalculateMeleeReach(attackOffset, GetWeaponCombatModifiers().RangeBonus);
+            Vector2 center = (Vector2)transform.position + attackDirection * effectiveReach;
             float angle = Mathf.Atan2(attackDirection.y, attackDirection.x) * Mathf.Rad2Deg;
             Collider2D[] overlaps = Physics2D.OverlapBoxAll(center, GetValidatedAttackSize(), angle, targetLayerMask);
             ApplyDamageToUniqueReceivers(overlaps, rawDamage, transform);
@@ -268,8 +279,15 @@ namespace HexaRealm.Player
 
             float angle = Mathf.Atan2(attackDirection.y, attackDirection.x) * Mathf.Rad2Deg;
             Transform slashTransform = slashVFX.transform;
-            slashTransform.localPosition = attackDirection * attackOffset;
+            slashTransform.localPosition = attackDirection * CombatMath.CalculateMeleeReach(
+                attackOffset,
+                GetWeaponCombatModifiers().RangeBonus);
             slashTransform.localRotation = Quaternion.Euler(0f, 0f, angle);
+            if (slashVFXRenderer != null)
+            {
+                Sprite overrideSprite = GetWeaponCombatModifiers().SlashVFXSprite;
+                slashVFXRenderer.sprite = overrideSprite != null ? overrideSprite : defaultSlashVFXSprite;
+            }
             slashVFX.SetActive(true);
             slashVFXEndTime = Time.time + Mathf.Max(0f, slashVFXDuration);
         }
@@ -302,6 +320,39 @@ namespace HexaRealm.Player
             {
                 playerDash = GetComponent<PlayerDash>();
             }
+
+            if (weaponSpriteTransform == null)
+            {
+                Transform weaponTransform = transform.Find("WeaponSprite");
+                weaponSpriteTransform = weaponTransform;
+            }
+
+            if (weaponCombatModifiers == null)
+            {
+                weaponCombatModifiers = GetComponent(typeof(IWeaponCombatModifiers)) as IWeaponCombatModifiers;
+            }
+        }
+
+        private IWeaponCombatModifiers GetWeaponCombatModifiers()
+        {
+            if (weaponCombatModifiers == null)
+            {
+                weaponCombatModifiers = GetComponent(typeof(IWeaponCombatModifiers)) as IWeaponCombatModifiers;
+            }
+
+            return weaponCombatModifiers ?? NeutralWeaponCombatModifiers.Instance;
+        }
+
+        private void UpdateWeaponVisualAim()
+        {
+            if (weaponSpriteTransform == null || !TryGetAttackDirection(out Vector2 aimDirection))
+            {
+                return;
+            }
+
+            float angle = Mathf.Atan2(aimDirection.y, aimDirection.x) * Mathf.Rad2Deg;
+            weaponSpriteTransform.localPosition = aimDirection * attackOffset;
+            weaponSpriteTransform.localRotation = Quaternion.Euler(0f, 0f, angle);
         }
 
         private void SetSlashVFXActive(bool active)
@@ -339,7 +390,9 @@ namespace HexaRealm.Player
                 : LastAttackDirection.sqrMagnitude > DirectionThreshold
                     ? LastAttackDirection
                 : Vector2.right;
-            Vector2 center = (Vector2)transform.position + direction * attackOffset;
+            Vector2 center = (Vector2)transform.position + direction * CombatMath.CalculateMeleeReach(
+                attackOffset,
+                GetWeaponCombatModifiers().RangeBonus);
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
 
             Matrix4x4 previousMatrix = Gizmos.matrix;
@@ -349,6 +402,16 @@ namespace HexaRealm.Player
             Gizmos.DrawWireCube(Vector3.zero, GetValidatedAttackSize());
             Gizmos.matrix = previousMatrix;
             Gizmos.color = previousColor;
+        }
+
+        private sealed class NeutralWeaponCombatModifiers : IWeaponCombatModifiers
+        {
+            public static readonly NeutralWeaponCombatModifiers Instance = new NeutralWeaponCombatModifiers();
+
+            public float AttackSpeedMultiplier => 1f;
+            public float CritBonus => 0f;
+            public float RangeBonus => 0f;
+            public Sprite SlashVFXSprite => null;
         }
     }
 }

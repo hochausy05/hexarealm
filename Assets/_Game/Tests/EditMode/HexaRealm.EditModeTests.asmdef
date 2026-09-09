@@ -6,7 +6,8 @@
     "HexaRealm.Player",
     "HexaRealm.Enemy",
     "HexaRealm.Progression",
-    "HexaRealm.Interaction"
+    "HexaRealm.Interaction",
+    "HexaRealm.Equipment"
   ],
   "includePlatforms": [
     "Editor"

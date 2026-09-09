@@ -391,7 +391,7 @@ Enemy chết → Player nhận Soul.
 
 ---
 
-## 🟡 TASK 12 — Soul Pillar + Upgrade System
+## ✅ TASK 12 — Soul Pillar + Upgrade System
 
 **Độ nặng:** Nặng  
 **Model:** GPT-5.6 Sol  
@@ -437,7 +437,7 @@ Interact
 
 # 7. Equipment + Loot + Farming Phase
 
-## ⬜ TASK 13 — Weapon Equipment
+## 🟡 TASK 13 — Weapon Equipment
 
 **Độ nặng:** Vừa  
 **Model:** GPT-5.6 Sol  
@@ -794,5 +794,5 @@ Không yêu cầu Codex tự làm task tiếp theo.
 
 ```text
 NEXT TASK:
-TASK 08 — Melee Slash Combat
+TASK 13 — Weapon Equipment
 ```

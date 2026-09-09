@@ -126,6 +126,20 @@ MẪU ENTRY:
 Chỉ giữ các heading thực sự có nội dung.
 -->
 
+## 2026-09-10 — TASK 13 Weapon Equipment Foundation (awaiting Manual Play Mode verification)
+
+### Added
+- Melee-only `WeaponData` and `PlayerEquipment`: idempotent equip, unequip, switch, and aggregate equipment-stat recalculation.
+- Prototype `BasicSword` (+3 damage, 1.0 attack-speed multiplier, +0 crit, +0 range) with a 32 PPU point-filtered placeholder PNG.
+- EditMode coverage for modifier isolation/idempotency, combat modifiers, data immutability, and prefab/data references.
+
+### Changed
+- Weapon damage contributes only to the Attack Equipment Modifier; `PlayerCombat` uses Final Attack, preventing double application.
+- Combat now reads weapon attack-speed, crit, range, WeaponSprite, and optional SlashVFX override with no-weapon fallbacks.
+
+### Notes
+- Prototype values are not final balance. Task remains in progress until Manual Play Mode verification.
+
 ## 2026-09-10 — Soul Pillar and player upgrade progression prototype
 
 ### Added
@@ -136,7 +150,7 @@ Chỉ giữ các heading thực sự có nội dung.
 
 ### Notes
 - Cap 10, cost base/growth 1 và mỗi stat +1/point chỉ là prototype; final balancing chưa chốt.
-- Task 12 giữ IN PROGRESS đến khi manual Soul → Pillar → Upgrade được xác minh trong Play Mode.
+- Manual Soul → Pillar → Upgrade đã được người dùng xác minh trong Play Mode; Task 12 được đánh dấu DONE.
 
 ## 2026-09-10 — Soul reward and player Soul wallet foundation
 
