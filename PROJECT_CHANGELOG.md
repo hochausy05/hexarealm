@@ -126,6 +126,19 @@ MẪU ENTRY:
 Chỉ giữ các heading thực sự có nội dung.
 -->
 
+## 2026-09-10 — TASK 14 Armor Equipment Foundation (awaiting Manual Play Mode verification)
+
+### Added
+- `ArmorData`, a single `EquippedArmor` slot, and `TrainingArmor` prototype (+3 Defense) with a point-filtered placeholder body sprite.
+- EditMode coverage for armor aggregation, switching, default-body restoration, null-body fallback, and data immutability.
+
+### Changed
+- `PlayerEquipment` now rebuilds all Equipment Modifiers from the equipped weapon and armor together, preserving Base and Soul Upgrade layers.
+- Armor swaps only the `Body` sprite; `WeaponSprite` and `SlashVFX` remain independent. Vitality continues through the existing PlayerHealth max-health sync without healing.
+
+### Notes
+- Prototype armor values and art are not final balance. Task remains in progress until Manual Play Mode verification.
+
 ## 2026-09-10 — TASK 13 Weapon Equipment Foundation (awaiting Manual Play Mode verification)
 
 ### Added

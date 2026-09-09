@@ -437,7 +437,7 @@ Interact
 
 # 7. Equipment + Loot + Farming Phase
 
-## 🟡 TASK 13 — Weapon Equipment
+## ✅ TASK 13 — Weapon Equipment
 
 **Độ nặng:** Vừa  
 **Model:** GPT-5.6 Sol  
@@ -459,7 +459,7 @@ Interact
 
 ---
 
-## ⬜ TASK 14 — Armor Equipment
+## 🟡 TASK 14 — Armor Equipment
 
 **Độ nặng:** Vừa  
 **Model:** GPT-5.6 Sol  
