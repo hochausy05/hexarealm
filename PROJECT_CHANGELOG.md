@@ -126,6 +126,20 @@ MẪU ENTRY:
 Chỉ giữ các heading thực sự có nội dung.
 -->
 
+## 2026-09-10 — TASK 16 Enemy Spawn Zone + Respawn Foundation (awaiting Manual Play Mode verification)
+
+### Added
+- Reusable `EnemySpawnZone` for one enemy prefab type, authored SpawnPoints, initial population, Max Alive enforcement, delayed retryable respawns, player-distance safety, blocking-mask clearance, and corpse cleanup.
+- New-instance respawn lifecycle preserves fresh Health, AI, and EnemySoulReward state; no pooling or persistent spawn state is included.
+- EditMode coverage for initial population/clamping, max-alive behavior, one death ticket, player-distance blocking, idempotent initialization, and spawn-point AI home.
+
+### Changed
+- `BasicEnemyAI` now accepts the spawn point as its per-instance home position.
+- `TechnicalTest` uses `SlimeSpawnZone` with three authored points; its prior direct Slime instance is disabled to prevent duplicates.
+
+### Notes
+- Task remains in progress until the Manual Play Mode farming loop is verified.
+
 ## 2026-09-10 — TASK 15 Chest + Loot Foundation (awaiting Manual Play Mode verification)
 
 ### Added

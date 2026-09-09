@@ -480,7 +480,7 @@ SlashVFX = Attack effect
 
 ---
 
-## 🟡 TASK 15 — Chest + Loot (awaiting Manual Play Mode verification)
+## ✅ TASK 15 — Chest + Loot
 
 **Độ nặng:** Vừa  
 **Model:** GPT-5.6 Sol  
@@ -498,7 +498,7 @@ SlashVFX = Attack effect
 
 ---
 
-## ⬜ TASK 16 — Enemy Spawn Zone + Respawn
+## 🟡 TASK 16 — Enemy Spawn Zone + Respawn (awaiting Manual Play Mode verification)
 
 **Độ nặng:** Nặng  
 **Model:** GPT-5.6 Sol  

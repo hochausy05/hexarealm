@@ -39,6 +39,14 @@ namespace HexaRealm.Enemy
         public EnemyAIState CurrentState { get; private set; } = EnemyAIState.Idle;
         public Vector2 HomePosition => homePosition;
 
+        /// <summary>
+        /// Assigns the authored spawn location for this enemy life before it begins normal AI work.
+        /// </summary>
+        public void SetHomePosition(Vector2 position)
+        {
+            homePosition = position;
+        }
+
         private void Awake()
         {
             ResolveReferences();
