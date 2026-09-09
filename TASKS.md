@@ -480,7 +480,7 @@ SlashVFX = Attack effect
 
 ---
 
-## ⬜ TASK 15 — Chest + Loot
+## 🟡 TASK 15 — Chest + Loot (awaiting Manual Play Mode verification)
 
 **Độ nặng:** Vừa  
 **Model:** GPT-5.6 Sol  

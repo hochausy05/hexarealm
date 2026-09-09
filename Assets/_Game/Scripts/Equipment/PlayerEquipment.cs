@@ -26,6 +26,8 @@ namespace HexaRealm.Equipment
 
         public WeaponData EquippedWeapon => equippedWeapon;
         public ArmorData EquippedArmor => equippedArmor;
+        public WeaponData StartingWeapon => startingWeapon;
+        public ArmorData StartingArmor => startingArmor;
         public float AttackSpeedMultiplier => equippedWeapon != null ? equippedWeapon.AttackSpeedMultiplier : 1f;
         public float CritBonus => equippedWeapon != null ? equippedWeapon.CritBonus : 0f;
         public float RangeBonus => equippedWeapon != null ? equippedWeapon.RangeBonus : 0f;

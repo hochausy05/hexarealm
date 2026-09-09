@@ -126,6 +126,17 @@ MẪU ENTRY:
 Chỉ giữ các heading thực sự có nội dung.
 -->
 
+## 2026-09-10 — TASK 15 Chest + Loot Foundation (awaiting Manual Play Mode verification)
+
+### Added
+- Fixed `LootBundleData`, one-time `LootChest`, and a narrow `PlayerEquipmentInventory` for unique WeaponData/ArmorData ownership.
+- `PlayerLootReceiver` routes Souls through `PlayerSoulWallet` and equipment through ownership; optional prototype auto-equip delegates to `PlayerEquipment`.
+- Closed/Open placeholder chest prefab, Explorer Sword (+5 Attack), Explorer Armor (+5 Defense), and `LootTestChest` in `TechnicalTest` with a fixed mixed bundle (+5 Soul).
+- EditMode coverage for unique ownership, starting ownership, one-time mixed rewards, invalid/missing-receiver safety, disable/enable persistence, and auto-equip.
+
+### Notes
+- Random loot, inventory UI, pickups, and chest persistence are intentionally not implemented. Task remains in progress until Manual Play Mode verification.
+
 ## 2026-09-10 — TASK 14 Armor Equipment Foundation (awaiting Manual Play Mode verification)
 
 ### Added

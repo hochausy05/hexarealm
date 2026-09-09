@@ -23,6 +23,8 @@ GameObject:
   - component: {fileID: 3371355901857076037}
   - component: {fileID: 3371355901857076038}
   - component: {fileID: 3371355901857076039}
+  - component: {fileID: 3371355901857076040}
+  - component: {fileID: 3371355901857076041}
   m_Layer: 8
   m_Name: Player
   m_TagString: Untagged
@@ -122,7 +124,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b2414354fe927e745956d0a335f5481d, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: HexaRealm.Player::HexaRealm.Player.PlayerController
   inputActions: {fileID: -944628639613478452, guid: e1f0ac56a2257e842b7a4a5dd2ded771, type: 3}
   movementSpeed: 4
@@ -164,7 +166,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 179d6e8af674fe34c884beb17eca1739, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::HexaRealm.Core.TopDownSorting
   sortPoint: {fileID: 0}
   precision: 100
@@ -339,6 +341,36 @@ MonoBehaviour:
   interactableLayerMask:
     serializedVersion: 2
     m_Bits: 4096
+--- !u!114 &3371355901857076040
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 330569631432920027}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e5050000000000000000000000000001, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: HexaRealm.Equipment::HexaRealm.Equipment.PlayerEquipmentInventory
+  playerEquipment: {fileID: 3371355901857076039}
+  ownedWeapons: []
+  ownedArmors: []
+--- !u!114 &3371355901857076041
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 330569631432920027}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e5040000000000000000000000000001, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: HexaRealm.Loot::HexaRealm.Loot.PlayerLootReceiver
+  playerSoulWallet: {fileID: 3371355901857076036}
+  equipmentInventory: {fileID: 3371355901857076040}
+  playerEquipment: {fileID: 3371355901857076039}
 --- !u!1 &2079261062219425829
 GameObject:
   m_ObjectHideFlags: 0
