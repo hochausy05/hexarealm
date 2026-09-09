@@ -59,6 +59,8 @@ namespace HexaRealm.Player
         [SerializeField] private PlayerStatValue agility = new PlayerStatValue(10f, OtherStatMinimum);
         [SerializeField] private PlayerStatValue rage = new PlayerStatValue(0f, OtherStatMinimum);
 
+        public event Action<PlayerStatType, float, float> StatChanged;
+
         public float GetBaseStat(PlayerStatType type)
         {
             return GetStat(type).BaseValue;
@@ -81,12 +83,18 @@ namespace HexaRealm.Player
 
         public void SetUpgradeModifier(PlayerStatType type, float value)
         {
-            GetStat(type).SetUpgradeModifier(value);
+            PlayerStatValue stat = GetStat(type);
+            float oldFinalValue = stat.FinalValue;
+            stat.SetUpgradeModifier(value);
+            NotifyIfFinalValueChanged(type, oldFinalValue, stat.FinalValue);
         }
 
         public void SetEquipmentModifier(PlayerStatType type, float value)
         {
-            GetStat(type).SetEquipmentModifier(value);
+            PlayerStatValue stat = GetStat(type);
+            float oldFinalValue = stat.FinalValue;
+            stat.SetEquipmentModifier(value);
+            NotifyIfFinalValueChanged(type, oldFinalValue, stat.FinalValue);
         }
 
         private void Awake()
@@ -138,6 +146,14 @@ namespace HexaRealm.Player
 
             stat.SetMinimumValue(minimumValue);
             return stat;
+        }
+
+        private void NotifyIfFinalValueChanged(PlayerStatType type, float oldFinalValue, float newFinalValue)
+        {
+            if (!Mathf.Approximately(oldFinalValue, newFinalValue))
+            {
+                StatChanged?.Invoke(type, oldFinalValue, newFinalValue);
+            }
         }
     }
 }

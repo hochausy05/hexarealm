@@ -27,6 +27,16 @@
                     "priority": 0
                 },
                 {
+                    "name": "Point",
+                    "type": "PassThrough",
+                    "id": "a7d50459-2d04-4f8f-a7f9-dab4e7f2e5ba",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false,
+                    "priority": 0
+                },
+                {
                     "name": "Dash",
                     "type": "Button",
                     "id": "0b5a9936-0f73-4cc6-b44d-3b4447ba144d",
@@ -188,6 +198,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "Attack",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ff5582c4-6b91-4893-9b61-9bdb56b90a8f",
+                    "path": "<Pointer>/position",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Point",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },

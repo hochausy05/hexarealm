@@ -126,6 +126,56 @@ MẪU ENTRY:
 Chỉ giữ các heading thực sự có nội dung.
 -->
 
+## 2026-09-09 — Task 08 mouse-aim correction
+
+### Fixed
+- Tách hướng melee attack khỏi movement: `Gameplay/Point` lấy vị trí pointer để slash liên tục, gồm cả hướng chéo.
+- Directional `OverlapBox` và `SlashVFX` cùng follow hướng từ Player tới pointer; movement và dash giữ nguyên behavior cũ.
+
+### Main files
+- `Assets/_Game/Data/Input/HexaRealmInputActions.inputactions`
+- `Assets/_Game/Scripts/Player/PlayerCombat.cs`
+
+## 2026-09-09 — Melee slash combat foundation
+
+### Added
+- Thêm `PlayerCombat` dùng `Gameplay/Attack`, hướng di chuyển hiện tại/gần nhất, cooldown theo Rage, một crit roll mỗi swing và directional `OverlapBox`.
+- Thêm raw damage receiver contract để combat gửi raw damage còn target tự áp Defense qua `DamageCalculator` và `Health`.
+- Chống self-hit và deduplicate receiver để target nhiều collider chỉ nhận damage một lần mỗi swing.
+- Hoàn thiện Player hierarchy với `WeaponSprite`, `SlashVFX` placeholder tự tắt và tạo `CombatDummy` hai collider trên layer `EnemyHitbox`.
+- Thêm EditMode tests cho công thức combat, interval safety, raw damage contract, deduplication, Player prefab và TechnicalTest dummy.
+
+### Main files
+- `Assets/_Game/Scripts/Combat/IRawDamageReceiver.cs`
+- `Assets/_Game/Scripts/Combat/CombatMath.cs`
+- `Assets/_Game/Scripts/Combat/CombatDummyDamageReceiver.cs`
+- `Assets/_Game/Scripts/Player/PlayerCombat.cs`
+- `Assets/_Game/Prefabs/Player/Player.prefab`
+- `Assets/_Game/Scenes/Test/TechnicalTest.unity`
+- `Assets/_Game/Tests/EditMode/CombatMathTests.cs`
+
+### Notes
+- Các coefficient Attack/Rage/Crit là prototype chỉnh được, chưa phải balancing cuối; Task 08 giữ IN PROGRESS đến khi manual Play Mode checklist được xác minh.
+
+## 2026-09-09 — Health và damage foundation
+
+### Added
+- Thêm `Health` tái sử dụng với initialization idempotent, damage/heal clamp, death một lần và quy tắc đổi Max Health không tự hồi máu.
+- Thêm `PlayerHealth` đồng bộ Final Vitality 1:1 sang Max Health và đọc Final Defense hiện tại khi nhận raw damage.
+- Thêm `DamageCalculator` chứa riêng công thức prototype `max(1, raw damage - defense)` với Defense không âm.
+- Thêm EditMode test assembly và 20 test cases cho Health, damage calculation, Vitality integration, anti-exploit và Player prefab.
+
+### Main files
+- `Assets/_Game/Scripts/Combat/Health.cs`
+- `Assets/_Game/Scripts/Combat/DamageCalculator.cs`
+- `Assets/_Game/Scripts/Player/PlayerHealth.cs`
+- `Assets/_Game/Scripts/Player/PlayerStats.cs`
+- `Assets/_Game/Prefabs/Player/Player.prefab`
+- `Assets/_Game/Tests/EditMode/HealthDamageTests.cs`
+
+### Notes
+- Player prefab giữ nguyên movement, dash, physics, sorting và visual hierarchy; chưa thêm UI, respawn hay combat của Task 08.
+
 ## 2026-09-09 — Player stats foundation
 
 ### Added

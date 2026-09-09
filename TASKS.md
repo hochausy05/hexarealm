@@ -239,7 +239,7 @@ Final
 
 ---
 
-## ⬜ TASK 07 — Health + Damage Foundation
+## ✅ TASK 07 — Health + Damage Foundation
 
 **Độ nặng:** Vừa  
 **Model:** GPT-5.6 Sol  
@@ -263,7 +263,7 @@ Task 06.
 
 ---
 
-## ⬜ TASK 08 — Melee Slash Combat
+## 🟡 TASK 08 — Melee Slash Combat
 
 **Độ nặng:** Nặng  
 **Model:** GPT-5.6 Sol  
@@ -794,5 +794,5 @@ Không yêu cầu Codex tự làm task tiếp theo.
 
 ```text
 NEXT TASK:
-TASK 07 — Health + Damage Foundation
+TASK 08 — Melee Slash Combat
 ```
