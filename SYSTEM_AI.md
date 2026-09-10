@@ -1,253 +1,146 @@
-# SYSTEM_AI — Quy tắc làm việc cho AI/Codex
+# SYSTEM_AI — AI/Codex Operating Rules
 
-> **Project:** HexaRealm  
-> **Vai trò:** Luật vận hành bắt buộc cho AI/Codex khi đọc, phân tích hoặc chỉnh sửa project.  
-> **Mục tiêu:** Giảm sai sót, tránh over-engineering, hạn chế thao tác thừa và tiết kiệm token/context.
+> **Purpose:** keep AI work focused, safe, and context-efficient.
 
----
+## QUICK RULES — READ FIRST
 
-# 1. Thứ tự tài liệu ưu tiên
+1. Read `README.md` first.
+2. Read this `QUICK RULES` section and only other rules relevant to the task.
+3. Read `TASKS.md` -> `CURRENT WORK` and the target task only.
+4. Search `GAME_DESIGN_CORE.md` by `GD-*` heading; do **not** read it end-to-end unless explicitly required.
+5. Read `PLAN.md` only when task order/dependency matters, and only the current phase.
+6. Read only the latest 1-3 relevant `PROJECT_CHANGELOG.md` entries when recent history is needed.
+7. Read only directly related code/assets/prefabs/scenes. Never scan the whole project by default.
+8. Make the smallest correct patch. Do not implement the next task.
+9. `GAME_DESIGN_CORE.md` is the gameplay/design source of truth.
+10. Stop after verification and a short report.
 
-Trước khi thực hiện task, AI phải ưu tiên đọc tài liệu theo thứ tự:
+## 1. Context and token policy
 
-1. `SYSTEM_AI.md`
-2. `GAME_DESIGN_CORE.md`
-3. `PROJECT_CHANGELOG.md`
-4. Các file liên quan trực tiếp đến task hiện tại
+Use **progressive disclosure** instead of loading all context up front.
 
-Không đọc toàn bộ project nếu task chỉ liên quan đến một khu vực nhỏ.
+### Default document behavior
 
----
+| File | Default behavior |
+|---|---|
+| `README.md` | Read fully; intentionally short |
+| `SYSTEM_AI.md` | Read Quick Rules + relevant section |
+| `TASKS.md` | Read `CURRENT WORK` + target task |
+| `GAME_DESIGN_CORE.md` | Search heading/keyword and read only matching `GD-*` section |
+| `PLAN.md` | Read current phase only when needed |
+| `PROJECT_CHANGELOG.md` | Read latest 1-3 relevant entries only |
 
-# 2. Nguyên tắc source of truth
+Do not use full-file reads (`cat`, equivalent broad reads, or whole-repository scans) on large docs unless the task requires them.
 
-`GAME_DESIGN_CORE.md` là source of truth về gameplay, progression, player stats, enemy rank, world structure, art direction và architecture định hướng.
+Do not repeatedly re-read unchanged context within one task.
 
-Không tự ý thay đổi các nguyên tắc cốt lõi nếu prompt không yêu cầu.
+## 2. Source of truth
 
-Nếu code hiện tại mâu thuẫn với `GAME_DESIGN_CORE.md`:
-- báo rõ mâu thuẫn;
-- không tự quyết thay đổi thiết kế lớn;
-- ưu tiên hỏi hoặc đề xuất phương án ngắn gọn.
+- Gameplay/design decisions: `GAME_DESIGN_CORE.md`.
+- Current next task/status: `TASKS.md` -> `CURRENT WORK`.
+- Roadmap/dependency intent: `PLAN.md`.
+- Recent implementation history: `PROJECT_CHANGELOG.md`.
+- Actual implementation behavior: current project files.
 
----
+If code conflicts with the design source of truth, report the conflict before making a large design change.
 
-# 3. Quy tắc tiết kiệm token
+## 3. Scope control
 
-## 3.1. Chỉ đọc file cần thiết
+Implement only the requested task/fix.
 
-Không:
-- đọc toàn bộ `Assets/`;
-- đọc toàn bộ project;
-- quét mọi script;
-- mở các file không liên quan.
+Do not silently:
+- start the next task;
+- add unrelated features;
+- refactor unrelated files;
+- install packages;
+- change project-wide settings;
+- create speculative systems;
+- redesign gameplay.
 
-Chỉ đọc:
-- file được prompt chỉ định;
-- dependency trực tiếp;
-- file cần thiết để hiểu hoặc sửa đúng task.
+Useful ideas outside scope belong in the final note only.
 
-## 3.2. Không lặp lại tài liệu dài
+## 4. Minimal engineering
 
-Không copy lại toàn bộ:
-- `GAME_DESIGN_CORE.md`;
-- `SYSTEM_AI.md`;
-- code dài đã tồn tại;
-- nội dung prompt.
+Prefer:
+- small components;
+- explicit dependencies;
+- Unity component-based design;
+- ScriptableObjects for reusable authoring data;
+- small deterministic helpers for formulas;
+- local C# events when actually needed.
 
-Chỉ tóm tắt phần liên quan.
+Avoid unless required:
+- global Event Bus;
+- Service Locator;
+- dependency injection frameworks;
+- generic RPG frameworks;
+- complex state-machine frameworks;
+- managers with project-wide responsibility;
+- abstractions with no current value.
 
-## 3.3. Không giải thích dài dòng sau khi hoàn thành
+Patch instead of rewrite whenever practical.
 
-Báo cáo cuối task phải ngắn:
-- đã làm gì;
-- file nào thay đổi;
-- có lỗi hay không;
-- lưu ý quan trọng nếu có.
+## 5. Unity safety
 
-Không viết tutorial dài nếu người dùng không yêu cầu.
-
-## 3.4. Không tạo kế hoạch nhiều tầng cho task nhỏ
-
-Task đơn giản:
-- kiểm tra;
-- thực hiện;
-- xác minh;
-- báo cáo.
-
-Không tạo roadmap, architecture proposal hoặc tài liệu phụ nếu không được yêu cầu.
-
----
-
-# 4. Không over-engineer
-
-Không tự ý thêm:
-- service locator;
-- dependency injection framework;
-- event bus toàn project;
-- generic framework;
-- state machine phức tạp;
-- manager toàn cục;
-- abstraction nhiều lớp;
-- interface chỉ có một implementation;
-- pattern chỉ để “chuẩn kiến trúc”.
-
-Ưu tiên:
-- code dễ đọc;
-- component nhỏ;
-- dependency rõ ràng;
-- ScriptableObject khi thực sự phù hợp;
-- Prefab;
-- Unity component-based design.
-
-Chỉ tăng độ phức tạp khi task thực tế cần.
-
----
-
-# 5. Giới hạn phạm vi task
-
-AI chỉ thực hiện đúng task được giao.
-
-Không tự ý:
-- làm bước tiếp theo;
-- thêm tính năng “tiện thể”;
-- refactor file không liên quan;
-- đổi tên hàng loạt;
-- thay architecture;
-- thêm package;
-- sửa Project Settings;
-- tạo asset ngoài phạm vi.
-
-Nếu thấy một cải tiến hữu ích:
-- ghi thành đề xuất cuối task;
-- không tự thực hiện.
-
----
-
-# 6. Quy tắc sửa code
-
-Trước khi sửa:
-1. Đọc file hiện tại.
-2. Xác định dependency trực tiếp.
-3. Giữ coding style hiện có nếu hợp lý.
-4. Sửa ít nhất có thể để đạt mục tiêu.
-
-Ưu tiên patch nhỏ hơn rewrite.
-
-Không rewrite toàn bộ file nếu chỉ cần sửa một phần.
-
-Không xóa code đang hoạt động nếu chưa xác định rõ lý do.
-
----
-
-# 7. Quy tắc Unity
-
-Không chỉnh thủ công:
+Never manually edit generated folders:
 - `Library/`
 - `Temp/`
 - `Logs/`
 - `UserSettings/`
 
-Không sửa `.meta` bằng tay trừ khi thật sự bắt buộc.
+Do not manually break `.meta`/GUID references.
 
-Không làm mất GUID asset.
+Do not change Render Pipeline, Input System, Sorting Layers, Physics Settings, packages, or Build Settings unless the active task requires it.
 
-Không tự ý thay:
-- Render Pipeline;
-- Input System;
-- Physics Settings;
-- Sorting Layer;
-- Package;
-- Build Settings;
+Use Unity/MCP/Editor APIs for scene, prefab, hierarchy, inspector, console, and asset-import operations when useful. Use direct text/file access for scripts and docs.
 
-trừ khi task yêu cầu.
+If MCP cannot control Play Mode, do not build a complicated workaround just to simulate a click. Report the manual verification needed.
 
-Sau thay đổi quan trọng:
-- để Unity import asset bình thường;
-- kiểm tra Console nếu MCP cho phép;
-- ưu tiên sửa compile error trước khi kết thúc task.
+## 6. Project file rules
 
----
-
-# 8. Quy tắc file và folder
-
-Nội dung tự phát triển của game nằm trong:
+Game-owned content belongs under:
 
 `Assets/_Game/`
 
-Tên nội bộ:
-- dùng tiếng Anh;
-- PascalCase cho class/file C#;
-- namespace bắt đầu bằng `HexaRealm`.
+Code/internal naming:
+- English
+- C# file/class: PascalCase
+- namespace prefix: `HexaRealm`
 
-Tên hiển thị trong game có thể dùng tiếng Việt.
+In-game display text may be Vietnamese.
 
-Không tạo duplicate folder chỉ vì khác chữ hoa/chữ thường.
+Do not create case-only duplicate folders.
 
-Không di chuyển tài liệu root nếu prompt không yêu cầu.
+## 7. Gameplay guardrails
 
----
+Never add a traditional Character Level/EXP system.
 
-# 9. Quy tắc gameplay bắt buộc
+Current player stats:
+- Vitality
+- Attack
+- Defense
+- Agility
+- Rage
 
-Không tự ý thêm hệ thống Level.
+Current progression:
 
-Player progression hiện tại:
+`Soul -> Soul Pillar -> stat upgrades`
 
-`Soul -> Soul Pillar -> nâng chỉ số`
+Rage affects Crit Chance and Attack Speed.
 
-5 Player Stats:
-- HP / Vitality
-- ATK / Attack
-- DEF / Defense
-- AGI / Agility
-- RAGE / Rage
+Enemy ranks:
 
-RAGE ảnh hưởng:
-- Critical Chance
-- Attack Speed
+`F, E, D, C, B, A, S`
 
-Enemy Rank:
-- S
-- A
-- B
-- C
-- D
-- E
-- F
-
-Enemy Rank dựa trên Power Budget của:
+Rank power inputs are only:
 - HP
 - ATK
 - DEF
 - Speed
 
-Không tự ý biến game thành tuyến tính.
+Current weapon scope: **melee slash only**.
 
-Boss thường:
-- tùy chọn.
-
-Boss chính:
-- mở vùng tiếp theo;
-- cho Đá Dịch Chuyển;
-- mở Upgrade Cap tiếp theo.
-
----
-
-# 10. Quy tắc combat hiện tại
-
-Phạm vi weapon hiện tại:
-
-**Melee Slash only**
-
-Không tự ý thêm:
-- bow;
-- spear;
-- staff;
-- gun;
-- magic weapon class.
-
-Player visual architecture:
+Current player visual structure:
 
 ```text
 Player
@@ -256,133 +149,107 @@ Player
 └── SlashVFX
 ```
 
-- `Body` thay theo giáp.
-- `WeaponSprite` thay theo vũ khí.
-- `SlashVFX` ban đầu dùng mặc định.
+Do not create combined body sprites for every armor + weapon pair.
 
-Không tạo sprite body riêng cho từng tổ hợp giáp + vũ khí.
+HumanRealm is semi-open. Optional bosses are not progression gates; the region main boss is.
 
----
+## 8. Data rules
 
-# 11. Quy tắc data
+Authoring data should not be mutated at runtime.
 
-Ưu tiên data-driven khi dữ liệu cần thay đổi thường xuyên.
-
-Ví dụ phù hợp với ScriptableObject:
+Examples of suitable ScriptableObjects:
 - EnemyData
 - WeaponData
 - ArmorData
-- LootData
-- ProgressionData
+- LootBundleData
 
-Không hard-code hàng loạt thông số gameplay vào nhiều script khác nhau.
+Do not duplicate a stat as separate serialized sources of truth in multiple runtime components.
 
-Nhưng cũng không tạo ScriptableObject chỉ để chứa một giá trị không cần tái sử dụng.
+Derived values should be recalculated from their sources, not incrementally accumulated when that can cause double application.
 
----
+## 9. Testing rules
 
-# 12. Quy tắc kiểm thử
+After a meaningful implementation change:
+1. compile;
+2. inspect Console if available;
+3. run only relevant existing tests;
+4. perform focused runtime verification when possible;
+5. report anything that still requires manual Play Mode validation.
 
-Sau khi thay đổi code, nếu có thể:
-1. Kiểm tra compile.
-2. Kiểm tra Unity Console.
-3. Chạy test liên quan nếu project đã có test.
-4. Chỉ test phạm vi liên quan.
+Do not run expensive unrelated checks for a small patch.
 
-Không chạy các bước nặng không cần thiết cho một thay đổi nhỏ.
+Never claim runtime verification that did not actually happen.
 
----
+## 10. Changelog writing rules
 
-# 13. Quy tắc dùng MCP / Unity
+`PROJECT_CHANGELOG.md` is **log-only**. Do not put instructions, project overview, templates, source-of-truth notes, or AI rules inside it.
 
-Nếu đang kết nối Unity qua MCP:
+Write changelog entries in **Vietnamese**.
 
-Ưu tiên dùng MCP khi cần:
-- kiểm tra Scene;
-- Hierarchy;
-- Inspector;
-- Console;
-- component;
-- prefab;
-- object trong Unity Editor.
-
-Không dùng MCP chỉ để đọc file text nếu có thể đọc trực tiếp nhanh hơn.
-
-Không thực hiện nhiều thao tác Editor lặp lại nếu có cách chỉnh dữ liệu/code an toàn hơn.
-
----
-
-# 14. Quy tắc phản hồi cuối task
-
-Báo cáo theo mẫu ngắn:
+For a significant task/fix, prepend one compact entry:
 
 ```text
-Hoàn thành:
-- ...
-
-File thay đổi:
-- ...
-
-Kiểm tra:
-- Compile: OK / lỗi
-- Console: OK / cảnh báo
-
-PROJECT_CHANGELOG.md:
-- Đã cập nhật / Không cần cập nhật
-
-Lưu ý:
-- ...
+## YYYY-MM-DD — Task XX: Tên ngắn
+- Thêm/thay đổi/sửa điều quan trọng nhất.
+- Nêu hệ thống hoặc file chính khi hữu ích.
+- Ghi một giới hạn đáng chú ý chỉ khi cần.
 ```
 
-Không lặp lại toàn bộ code đã viết.
+Keep entries to roughly 1-4 bullets. Do not paste prompts, diffs, long acceptance lists, or repetitive status text.
 
----
+Update the changelog for:
+- new systems/features;
+- meaningful architecture changes;
+- important project settings/packages;
+- important scenes/prefabs;
+- meaningful gameplay changes;
+- significant bug fixes.
 
-# 15. Khi nào phải cập nhật PROJECT_CHANGELOG.md
+Skip changelog entries for typo/format/comment-only changes.
 
-Phải cập nhật nếu task:
-- thêm tính năng;
-- thêm hệ thống;
-- thay architecture;
-- thêm package/công nghệ;
-- thay Project Settings quan trọng;
-- thêm Scene chính;
-- thêm Prefab/hệ thống gameplay;
-- thay đổi hành vi gameplay đáng kể;
-- sửa bug có ảnh hưởng đáng kể.
+## 11. Task tracker rules
 
-Không cần cập nhật với:
-- đổi comment;
-- sửa typo;
-- formatting;
-- thay đổi không ảnh hưởng chức năng;
-- tạo folder rỗng ban đầu nếu chưa có hệ thống.
+`TASKS.md` uses checkboxes.
 
----
+Only change task status when evidence supports it:
+- `[x]` verified/accepted;
+- `[ ]` not done;
+- `[~]` implemented but awaiting verification;
+- `[!]` blocked/revision required.
 
-# 16. Quy tắc cập nhật changelog
+Keep `CURRENT WORK` at the top accurate.
 
-Khi cập nhật `PROJECT_CHANGELOG.md`:
-- thêm entry mới;
-- không rewrite lịch sử cũ;
-- không xóa entry cũ;
-- mô tả ngắn gọn;
-- ghi rõ file/hệ thống chính liên quan;
-- không copy toàn bộ prompt;
-- không copy diff code.
+Do not copy full task prompts into `TASKS.md`.
 
----
+## 12. Final response format
 
-# 17. Ưu tiên cao nhất
+Keep the final task report compact:
 
-Theo thứ tự:
+```text
+Completed:
+- ...
 
-1. Đúng yêu cầu.
-2. Không phá project.
-3. Giữ đúng source of truth.
-4. Code đơn giản và dễ bảo trì.
-5. Tái sử dụng hợp lý.
-6. Tiết kiệm token/context.
-7. Chỉ sau đó mới tối ưu thêm.
+Changed:
+- ...
 
-> **Không cố làm nhiều nhất. Hãy làm đúng phần cần thiết nhất.**
+Verification:
+- Compile: OK / issue
+- Tests: OK / not run / issue
+- Runtime: verified / manual check needed
+
+Docs:
+- TASKS.md: updated / unchanged
+- PROJECT_CHANGELOG.md: updated / unchanged
+```
+
+Do not write a tutorial unless asked.
+
+## 13. Priority order
+
+1. Correct requirement.
+2. Do not break the project.
+3. Preserve design source of truth.
+4. Keep implementation simple and maintainable.
+5. Reuse existing systems where appropriate.
+6. Minimize unnecessary context/token use.
+7. Optimize only after the above are satisfied.

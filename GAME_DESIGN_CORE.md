@@ -1,778 +1,263 @@
-# GAME DESIGN CORE — 2D Fantasy Top-Down RPG
+# GAME_DESIGN_CORE — HexaRealm Design Source of Truth
 
-> **Mục đích:** Tài liệu nguồn (source of truth) dùng để định hướng thiết kế game, triển khai Unity và làm ngữ cảnh cho AI/Codex trong quá trình phát triển.
->
-> **Trạng thái:** Các nguyên tắc cốt lõi dưới đây đã được chốt. Các con số cân bằng cụ thể như damage, Soul cost, respawn time, số lượng quái... sẽ được tinh chỉnh sau khi prototype và playtest.
+> **AI usage:** Do not read this file end-to-end by default. Search the `GD-*` section referenced by the current task.
+> **Scope:** stable design rules. Prototype balance numbers remain adjustable unless explicitly marked fixed.
 
----
+## QUICK DESIGN CONTEXT
 
-# 1. Tầm nhìn game
-
-## 1.1. Thể loại
-
-- 2D Pixel Art.
-- Góc nhìn từ trên xuống (Top-down).
-- Fantasy Action RPG.
-- Single-player.
-- Tập trung vào khám phá, chiến đấu cận chiến, loot, nâng cấp nhân vật và boss.
-
-## 1.2. Cấu trúc thế giới
-
-Thế giới gồm **6 vùng đất / 6 mặt thế giới**.
-
-Mỗi vùng có:
-- Môi trường riêng.
-- Quái riêng.
-- Boss thường / boss phụ.
-- Boss chính của vùng.
-- Vật phẩm và vũ khí đặc trưng.
-- Một viên **Đá Dịch Chuyển**.
-
-Khi thu thập đủ 6 Đá Dịch Chuyển:
-- Mở khóa không gian trung tâm.
-- Di chuyển đến khu vực cuối.
-- Đánh Final Boss.
-- Kết thúc game.
-
-## 1.3. Vùng đầu tiên — Nhân Giới
-
-Phong cách chính:
-- Xanh tươi.
-- Nhiều cây cỏ, đá, bụi cây, hoa.
-- Có hồ / sông nhỏ nếu phù hợp.
-- Một vài hang động nhỏ.
-- Một khu dân làng.
-- NPC đi lại để tạo cảm giác thế giới có sức sống.
-- Nhiều khu hoang dã để khám phá và farm quái.
-- Boss thường nằm rải rác.
-- Boss chính của Nhân Giới nằm ở khu vực riêng.
+- 2D top-down fantasy pixel-art action RPG, single-player.
+- World has 6 regions/faces; each region has a main boss and a Teleport Stone.
+- Collect all 6 stones -> central/final area -> final boss.
+- HumanRealm is the first region and current vertical-slice focus.
+- No traditional Character Level or EXP progression.
+- Progression: Soul -> Soul Pillar -> 5 stat upgrades + equipment.
+- Stats: Vitality, Attack, Defense, Agility, Rage.
+- Rage affects Crit Chance + Attack Speed.
+- Farming is allowed; Upgrade Cap limits power progression by region.
+- Enemy ranks: F, E, D, C, B, A, S. HumanRealm mainly uses F/E enemies.
+- Enemy rank budget uses HP, ATK, DEF, Speed only.
+- Current weapon class: melee slash only.
+- Controls: movement and melee aim are independent; mouse pointer controls melee direction.
+- Player visual layers: Body + WeaponSprite + SlashVFX.
+- HumanRealm is semi-open, not a linear stage chain.
+- Optional bosses reward exploration; only the main region boss gates progression.
+- Base tile: 32x32 px, PPU 32, Point filtering, no compression.
 
 ---
 
-# 2. Triết lý gameplay
-
-Game **không phải game đi ải tuyến tính**.
-
-Người chơi được tự do lựa chọn cách mạnh lên và đường đi trong từng vùng.
-
-Không bắt buộc:
-- Phải đánh quái theo thứ tự.
-- Phải đánh boss thường.
-- Phải đi theo một tuyến đường duy nhất.
-- Phải đạt một Level nhất định.
-
-Ví dụ:
-- Người chơi có thể dành vài giờ farm Slime.
-- Dùng Linh Hồn để nâng chỉ số.
-- Sau đó đi đánh thẳng boss chính nếu muốn.
-- Tuy nhiên nếu bỏ qua boss thường và rương hiếm thì sẽ thiếu trang bị tốt, khiến boss chính khó hơn đáng kể.
-
-**Nguyên tắc:**
-> Cho người chơi tự chọn con đường mạnh lên thay vì ép họ theo chuỗi nhiệm vụ cố định.
-
----
-
-# 3. Core Gameplay Loop
+## GD-01 — Game Vision and World
 
-```text
-Khám phá
-    ↓
-Đánh quái
-    ↓
-Nhận Linh Hồn / mở rương
-    ↓
-Tìm trang bị
-    ↓
-Tìm Trụ Linh Hồn
-    ↓
-Nâng chỉ số
-    ↓
-Mạnh lên
-    ↓
-Khám phá khu vực nguy hiểm hơn
-    ↓
-Đánh boss thường (tùy chọn)
-    ↓
-Nhận trang bị đặc trưng
-    ↓
-Đánh boss chính của vùng
-    ↓
-Nhận Đá Dịch Chuyển
-    ↓
-Mở giới hạn sức mạnh + vùng tiếp theo
-```
+HexaRealm is a 2D top-down fantasy action RPG focused on exploration, melee combat, loot, stat growth, and bosses.
 
----
+The world contains six distinct regions. Each region has its own environment, enemies, optional encounters/bosses, main boss, equipment, and one Teleport Stone.
 
-# 4. Không sử dụng hệ thống Level
+Defeating each region's main boss grants its stone and unlocks progression. Six stones unlock the central/final region and final boss.
 
-Game **không có Character Level truyền thống**.
+HumanRealm is the first and current development focus. Finish it as a reusable vertical slice before building the other five regions.
 
-Không có:
-- EXP bar.
-- Level 1, 2, 3...
-- Tự động cộng HP/ATK khi lên level.
+## GD-02 — Player Freedom and Core Loop
 
-Progression của nhân vật đến từ:
-1. Linh Hồn.
-2. Nâng chỉ số tại Trụ Linh Hồn.
-3. Trang bị.
-4. Vũ khí.
-5. Phần thưởng từ boss.
-6. Mở giới hạn sức mạnh sau khi đánh boss chính của vùng.
+HumanRealm is semi-open. Do not force a single route or mandatory sequence of normal enemies/optional bosses.
 
----
+The player may farm weak enemies for a long time and challenge the main boss early if desired. Skipping optional bosses/chests is allowed but should usually mean weaker equipment.
 
-# 5. Hệ thống Linh Hồn
+Core loop:
 
-## 5.1. Nhận Linh Hồn
+`Explore -> Fight -> Soul / Chest -> Equipment -> Soul Pillar -> Upgrade -> Stronger Areas -> Optional Boss -> Main Boss -> Teleport Stone`
 
-Khi quái chết:
-- Quái trao Linh Hồn cho người chơi.
-- Quái càng mạnh thì càng cho nhiều Linh Hồn.
+The main region boss is the primary mandatory progression gate.
 
-Boss có thể cho:
-- Lượng Linh Hồn lớn.
-- Trang bị đặc trưng.
-- Phần thưởng riêng.
+## GD-03 — Progression, Soul, and Upgrade Cap
 
-## 5.2. Trụ Linh Hồn
+There is no traditional Character Level, EXP bar, or automatic level-up stat growth.
 
-Linh Hồn được sử dụng tại **Trụ Linh Hồn** để nâng chỉ số.
+Power comes from:
+- Soul upgrades;
+- weapons;
+- armor;
+- boss/chest rewards;
+- higher Upgrade Caps unlocked by world progression.
 
-Trụ có thể đảm nhiệm:
-- Nâng chỉ số.
-- Hồi phục.
-- Điểm lưu / checkpoint.
-- Điểm respawn.
+Enemies grant Soul on death. Stronger enemies should generally reward more Soul, but exact values are balancing data.
 
-Trụ được đặt rải rác, không quá dày. Trong Nhân Giới nên có trụ tại:
-- Khu dân làng.
-- Khu trung tâm map.
-- Gần khu vực nguy hiểm.
-- Gần đường dẫn tới boss chính.
+Soul is spent at Soul Pillars to upgrade player stats. Soul Pillars may later also support healing/checkpoints/save/respawn, but those functions are separate features and must not be assumed unless implemented by a task.
 
----
+Upgrade Cap applies to total Soul upgrades available in the current world progression state. The player remains free to distribute upgrades across any stats.
 
-# 6. Năm chỉ số chính của nhân vật
+Do not reduce Soul rewards merely because the player farms for a long time.
 
-## 6.1. Sinh lực — HP
+## GD-04 — Player Stats
 
-Tên nội bộ: `Vitality`
+Exactly five core player stats:
 
-Tác dụng:
-- Tăng Max HP.
+| Stat | Meaning | Intended effect |
+|---|---|---|
+| Vitality | HP | Max Health |
+| Attack | ATK | melee damage |
+| Defense | DEF | damage mitigation |
+| Agility | AGI | movement; may later affect mobility/dash |
+| Rage | RAGE | Crit Chance + Attack Speed |
 
-Phong cách build:
-- Tank.
-- An toàn.
-- Chịu được nhiều lỗi hơn khi chiến đấu.
+Stat architecture:
 
-## 6.2. Công kích — ATK
+`Base + Upgrade Modifier + Equipment Modifier = Final`
 
-Tên nội bộ: `Attack`
+Final values are derived. Upgrades and equipment must not mutate Base values.
 
-Tác dụng:
-- Tăng sát thương cận chiến.
+Exact formulas/scaling remain balance decisions unless implemented as explicitly documented prototypes.
 
-Phong cách build:
-- Sát thương cao.
-- Đánh boss nhanh.
-- Glass cannon nếu bỏ qua phòng thủ.
+## GD-05 — Combat and Controls
 
-## 6.3. Giáp — DEF
+Current combat scope:
+- 8-direction movement;
+- melee slash;
+- directional hit detection;
+- damage / health / death;
+- dash;
+- crit;
+- attack speed;
+- slash VFX;
+- optional light knockback later if useful.
 
-Tên nội bộ: `Defense`
+Current keyboard/mouse control intent:
+- movement input controls movement;
+- mouse pointer controls melee aim independently;
+- attack slashes toward pointer;
+- dash follows movement-direction logic, not pointer aim.
 
-Tác dụng:
-- Giảm sát thương nhận vào.
+Current weapon class is **melee slash only**. Do not add bow, staff, spear, gun, or magic weapon classes during the current foundation unless a later task explicitly expands scope.
 
-Phong cách build:
-- Tank.
-- Chịu đòn tốt.
+Crit and Attack Speed are influenced by Rage. Exact coefficients/caps are still balancing decisions.
 
-## 6.4. Nhanh nhẹn — AGI
+## GD-06 — Enemy Rank and Power Budget
 
-Tên nội bộ: `Agility`
+Normal enemy ranks:
 
-Tác dụng:
-- Tăng tốc độ di chuyển.
-- Có thể ảnh hưởng nhẹ đến Dash / khả năng cơ động.
+`F < E < D < C < B < A < S`
 
-Phong cách build:
-- Né đòn.
-- Di chuyển nhanh.
-- Hit-and-run.
+HumanRealm primarily uses F and E enemies initially. Bosses are handled separately from normal rank balancing.
 
-## 6.5. Cuồng nộ — RAGE
+Normal enemy base power uses exactly:
+- HP;
+- ATK;
+- DEF;
+- Speed.
 
-Tên nội bộ: `Rage`
+Behavior complexity, aggro range, attack pattern, collider size, Soul reward, flying, visuals, and loot do not directly determine rank.
 
-Tác dụng:
-- Tăng Critical Chance.
-- Tăng Attack Speed.
+If one base stat is unusually strong for a rank, other base stats should generally be lower so total power remains appropriate.
 
-Phong cách build:
-- Đánh nhanh.
-- Nhiều crit.
-- DPS cao.
+Example intent:
+- F Bat: fast, fragile, low damage/defense.
+- F Slime: slower, more HP, low-to-moderate low-rank damage.
 
----
+Final power-budget weights and F-S thresholds are intentionally undecided until enough combat playtesting exists.
 
-# 7. Logic nâng chỉ số
+## GD-07 — Equipment and Loot
 
-Tại Trụ Linh Hồn:
+Equipment is a major progression source alongside Soul upgrades.
 
-```text
-Chọn chỉ số
-    ↓
-Kiểm tra giới hạn hiện tại
-    ↓
-Kiểm tra đủ Linh Hồn
-    ↓
-Trừ Linh Hồn
-    ↓
-Tăng chỉ số
-```
+Sources may include:
+- chests;
+- optional bosses;
+- main bosses;
+- secret areas;
+- shops/NPCs later if added.
 
-Chi phí nâng tăng dần theo số lần nâng.
+Current equipment slots:
+- one melee weapon;
+- one armor set/slot.
 
-Mục tiêu:
-- Những điểm đầu dễ lấy.
-- Những điểm sau cần farm nhiều hơn.
-- Người chơi phải cân nhắc build.
+Weapon data may influence:
+- Damage;
+- Attack Speed;
+- Crit bonus;
+- small Range bonus;
+- WeaponSprite;
+- optional SlashVFX override.
 
-Công thức cụ thể sẽ được cân bằng sau khi test.
+Armor may influence the five player stats and changes the Body visual.
 
----
-
-# 8. Upgrade Cap và tự do farm
-
-Mỗi vùng đất có một **Upgrade Cap**.
-
-Trong Nhân Giới:
-- Người chơi được farm Linh Hồn tùy ý.
-- Có thể dành vài giờ đánh Slime nếu muốn.
-- Không giảm thưởng vì farm lâu.
-- Không ép rời khu vực.
-- Chỉ không thể nâng vượt quá Upgrade Cap hiện tại.
-
-Người chơi tự do phân phối điểm:
-- Full ATK.
-- Full HP + DEF.
-- AGI + RAGE.
-- Chia đều.
-- Hoặc bất kỳ build nào khác.
-
-Sau khi đánh boss chính của Nhân Giới:
-- Upgrade Cap được mở rộng.
-- Người chơi có thể tiếp tục mạnh hơn ở thế giới kế tiếp.
-
-**Nguyên tắc:**
-> Không chống farm bằng cách ép lối chơi; chỉ khóa trần sức mạnh theo tiến trình thế giới.
-
----
-
-# 9. Phân cấp quái
-
-Quái thường được chia thành 7 cấp:
-
-```text
-S
-A
-B
-C
-D
-E
-F
-```
-
-- F thấp nhất.
-- S cao nhất.
-
-Trong Nhân Giới ban đầu:
-- Chủ yếu Rank F.
-- Một số Rank E.
-- Boss tính riêng sau.
-
----
-
-# 10. Chỉ số quái
-
-Quái thường sử dụng 4 chỉ số chính:
-
-1. `HP`
-2. `ATK`
-3. `DEF`
-4. `Speed`
-
-Các yếu tố hành vi như cách tấn công, aggro, tầm đánh... có thể khác nhau giữa quái nhưng **không dùng để tính Rank**.
-
----
-
-# 11. Logic Rank quái — Power Budget
-
-Rank được xác định dựa trên **tổng sức mạnh của 4 chỉ số chính**.
-
-Thiết kế theo nguyên tắc:
-
-```text
-Rank
-    ↓
-Power Budget
-    ↓
-Phân bổ vào HP / ATK / DEF / Speed
-```
-
-Nếu một quái nổi trội ở một chỉ số thì các chỉ số còn lại phải thấp hơn để vẫn giữ đúng Rank.
-
-Ví dụ:
-
-### Bat Rank F
-- Speed cao.
-- HP rất thấp.
-- DEF thấp.
-- ATK thấp.
-- Có thể chết sau 1–2 đòn.
-
-### Slime Rank F
-- Speed thấp.
-- HP cao hơn Bat.
-- ATK thấp/trung bình thấp.
-- DEF thấp.
-
-Cả hai vẫn là Rank F vì tổng sức mạnh tương đương.
-
-**Nguyên tắc cho AI/Codex:**
-> Một chỉ số tăng mạnh thì phải giảm một hoặc nhiều chỉ số khác nếu vẫn muốn giữ cùng Rank.
-
-Ngưỡng Power Budget cụ thể của F → S sẽ được chốt sau khi có combat prototype để tránh cân bằng bằng số liệu lý thuyết quá sớm.
-
----
-
-# 12. Linh Hồn theo Rank
-
-Số Linh Hồn nhận được phụ thuộc vào Rank.
-
-```text
-Rank càng cao
-    ↓
-Power Budget càng cao
-    ↓
-Soul Reward càng lớn
-```
-
-Khoảng tương đối:
-
-| Rank | Soul Reward |
-|---|---|
-| F | Rất thấp |
-| E | Thấp |
-| D | Trung bình thấp |
-| C | Trung bình |
-| B | Cao |
-| A | Rất cao |
-| S | Cực cao |
-
-Con số cụ thể sẽ cân bằng sau.
-
----
-
-# 13. Trang bị
-
-Trang bị là nguồn sức mạnh quan trọng bên cạnh nâng chỉ số.
-
-Nguồn trang bị:
-- Rương.
-- Boss thường.
-- Boss chính.
-- Khu vực bí mật.
-- Có thể bổ sung shop/NPC sau.
-
-Người chơi bỏ qua boss thường vẫn có thể đánh boss chính nếu đủ mạnh bằng cách farm Linh Hồn, nhưng sẽ thiếu trang bị tốt và khó hơn.
-
----
-
-# 14. Vũ khí
-
-## 14.1. Phạm vi hiện tại
-
-Giai đoạn đầu chỉ sử dụng:
-
-**Vũ khí cận chiến dạng chém.**
-
-Chưa triển khai:
-- Bow.
-- Staff.
-- Spear.
-- Gun.
-- Magic weapon.
-- Nhiều weapon class.
-
-Mục tiêu:
-- Giảm animation.
-- Giảm code.
-- Dễ cân bằng.
-- Hoàn thiện combat trước.
-
-## 14.2. Vũ khí đặc trưng
-
-Boss thường, rương hiếm và boss chính có thể cho vũ khí đặc trưng.
-
-Vũ khí có thể khác nhau ở:
-- Damage.
-- Attack Speed.
-- Crit bonus.
-- Range nhẹ.
-- Hiệu ứng đặc biệt trong tương lai.
-
----
-
-# 15. Kiến trúc hình ảnh Player
-
-Player được tách thành:
+Player visual structure:
 
 ```text
 Player
-│
-├── Body
-├── WeaponSprite
-└── SlashVFX
+├── Body          # armor/body visual
+├── WeaponSprite  # weapon visual
+└── SlashVFX      # attack effect
 ```
 
-## 15.1. Body
+Do not create a unique combined character sprite for every armor + weapon pairing.
 
-`Body`:
-- Sprite nhân vật.
-- Thay đổi theo bộ giáp đang mặc.
-- Không gắn cố định vũ khí vào sprite body.
+Loot/chest rewards should initially be fixed and deterministic before adding random loot systems.
 
-## 15.2. WeaponSprite
+## GD-08 — Enemy Respawn and Farming
 
-`WeaponSprite`:
-- Sprite vũ khí tách riêng.
-- Thay đổi khi đổi vũ khí.
-- Gắn vào điểm neo / pivot trên nhân vật.
+Normal enemies may respawn so the player can farm Soul and keep areas active.
 
-Nhờ đó:
-- Không cần vẽ lại toàn bộ nhân vật cho từng thanh kiếm.
-- Một animation chém có thể tái sử dụng cho nhiều vũ khí cận chiến.
+Rules:
+- do not respawn directly on/next to the player;
+- allow a delay and/or spatial safety condition;
+- prefer reusable spawn zones over hard-coded individual respawn logic;
+- a respawned enemy is a new life and may grant Soul again;
+- the same corpse/death must not grant repeated Soul.
 
-## 15.3. SlashVFX
+Main bosses should not automatically respawn during normal progression.
 
-`SlashVFX`:
-- Hiệu ứng chém.
-- Ban đầu dùng một VFX mặc định.
-- Sau này có thể thay đổi theo vũ khí.
+Optional-boss respawn policy is a later playtest decision.
 
----
+## GD-09 — HumanRealm World
 
-# 16. Giáp
+HumanRealm mood: bright, green, human/fantasy, friendly as the starting region but with dangerous wilderness pockets.
 
-Giáp ảnh hưởng đến:
-1. Chỉ số.
-2. Hình ảnh `Body`.
+Expected world ingredients:
+- grasslands;
+- forests;
+- dirt roads;
+- rocks/bushes/flowers;
+- small water features where useful;
+- cliffs/terrain boundaries;
+- caves;
+- a village;
+- wandering NPC ambience;
+- wilderness farming areas;
+- optional encounters/bosses;
+- main boss area;
+- Soul Pillars and chests.
 
-Khi đổi giáp:
-- Có thể thay sprite / animation body tương ứng.
-- WeaponSprite vẫn là lớp riêng.
-- SlashVFX vẫn là lớp riêng.
+The graybox should test exploration scale before final art.
 
-Không tạo tổ hợp sprite riêng cho từng giáp + từng kiếm.
+Starting outdoor test scale:
+- roughly 100-128 tiles per axis;
+- base tile 32x32 px.
 
-```text
-Body theo giáp
-+
-WeaponSprite theo vũ khí
-+
-SlashVFX
-```
+Do not lock final map size until travel time, density, camera, area spacing, and player movement have been playtested.
 
----
+## GD-10 — Pixel Art and Asset Standards
 
-# 17. Combat cơ bản
+Style: 2D top-down fantasy pixel art. Prioritize readability and consistency over detail.
 
-MVP combat cần:
-- Di chuyển 4/8 hướng.
-- Đánh cận chiến.
-- Hitbox.
-- Damage.
-- Nhận damage.
-- Death.
-- Dash / né.
-- Crit.
-- Attack Speed.
-- Slash VFX.
-- Knockback nhẹ nếu phù hợp.
-
-Không mở rộng combat quá sớm.
-
----
-
-# 18. Boss
-
-## 18.1. Boss thường / boss phụ
-
-- Không bắt buộc.
-- Nằm ở các khu vực khám phá.
-- Khó hơn quái thường.
-- Cho phần thưởng tốt.
-- Có thể cho vũ khí đặc trưng hoặc trang bị mạnh.
-
-Vai trò:
-- Khuyến khích khám phá.
-- Giúp người chơi mạnh hơn.
-- Không dùng để ép tuyến truyện.
-
-## 18.2. Boss chính của vùng
-
-Mỗi vùng có một boss chính.
-
-Khi đánh bại:
-- Nhận Đá Dịch Chuyển.
-- Mở vùng tiếp theo.
-- Mở Upgrade Cap mới.
-- Có thể nhận vũ khí / trang bị đặc trưng.
-
-Boss chính là cột mốc progression bắt buộc duy nhất để sang vùng tiếp theo.
-
----
-
-# 19. Respawn quái
-
-Quái thường có thể respawn để:
-- Farm Linh Hồn.
-- Giữ map luôn có hoạt động.
-- Cho phép người chơi grind tùy ý.
-
-Nguyên tắc:
-- Không respawn ngay trước mặt player.
-- Có thời gian chờ hoặc yêu cầu player rời khu vực đủ lâu.
-- Có thể respawn khi reload/quay lại khu vực.
-- Nên dùng spawn zone thay vì hard-code từng vị trí nếu phù hợp.
-
-Boss chính:
-- Không tự động respawn trong progression thông thường.
-
-Boss thường:
-- Quyết định respawn hay không sau khi playtest.
-
----
-
-# 20. Triết lý thiết kế Nhân Giới
-
-Nhân Giới là một **semi-open region**, không phải chuỗi level.
-
-Người chơi được:
-- Đi nhiều hướng.
-- Farm quái.
-- Tìm hang.
-- Tìm rương.
-- Tìm boss thường.
-- Ghé làng.
-- Tìm Trụ Linh Hồn.
-- Tự quyết định khi nào đủ mạnh để đánh boss chính.
-
----
-
-# 21. Nội dung Nhân Giới dự kiến
-
-## Môi trường
-- Đồng cỏ.
-- Rừng.
-- Cây.
-- Đá.
-- Bụi cây.
-- Hoa.
-- Đường đất.
-- Hồ / sông nhỏ.
-- Vách đá.
-- Hang nhỏ.
-- Tàn tích nếu phù hợp.
-- Khu dân làng.
-- Khu boss chính.
-
-## Làng
-- Một số nhà.
-- NPC.
-- NPC đi lại bằng waypoint đơn giản.
-- Trụ Linh Hồn.
-- Có thể có shop / thợ rèn sau.
-
-Mục tiêu ban đầu của NPC:
-- Làm thế giới có cảm giác sống.
-- Không cần quest/dialogue phức tạp ngay.
-
----
-
-# 22. Kích thước map
-
-Không chốt tuyệt đối trước khi test.
-
-Mục tiêu:
-- Đủ rộng để có cảm giác khám phá.
-- Không lớn đến mức trống.
-- Có đủ không gian để farm và đi vòng.
-- Thời gian chơi một map không quá ngắn.
-
-Giá trị khởi điểm đề xuất:
+Default technical standard:
 
 ```text
-Outdoor map: khoảng 100–128 tiles mỗi chiều
-Tile size: 32x32
-```
-
-Hang động:
-- Có thể là scene hoặc sub-map riêng.
-- Nhỏ hơn map ngoài trời.
-
-Trước khi xây full map:
-- Test tileset ở map nhỏ.
-- Test mật độ quái.
-- Test camera.
-- Test tốc độ di chuyển.
-- Sau đó mới chốt kích thước cuối.
-
----
-
-# 23. Style Asset — Art Direction
-
-## 23.1. Phong cách tổng thể
-
-**2D Top-down Fantasy Pixel Art**
-
-Cảm giác:
-- Fantasy.
-- Sạch.
-- Dễ đọc gameplay.
-- Màu sắc tươi nhưng không quá chói.
-- Không quá realistic.
-- Không quá chibi nếu làm giảm cảm giác phiêu lưu.
-- Ưu tiên sự đồng nhất hơn độ chi tiết.
-
-## 23.2. Nhân Giới
-
-Palette chủ đạo:
-- Xanh lá.
-- Nâu đất.
-- Xám đá.
-- Xanh nước.
-- Màu gỗ.
-- Một số màu hoa / điểm nhấn.
-
-Không khí:
-- Tươi.
-- Sống động.
-- Là vùng khởi đầu nên thân thiện hơn các vùng sau.
-- Có chất fantasy nhưng vẫn mang cảm giác “thế giới con người”.
-
----
-
-# 24. Chuẩn kỹ thuật asset
-
-Mặc định ban đầu:
-
-```text
-Tile Size: 32x32 px
+Base Tile: 32x32 px
 Pixels Per Unit: 32
-Texture Filter: Point / No Filter
+Filter Mode: Point / No Filter
 Compression: None
 Camera: Orthographic
-Style: Pixel Art
 ```
 
-## Tile
-- Tile cơ bản: `32x32 px`.
-- Object có thể lớn hơn một tile.
+Player animation cells may be 48x48 or 64x64 when extra motion space is needed. Enemy canvas size may vary by enemy scale.
 
-Ví dụ:
-```text
-Tree: 64x64 / 64x96
-Rock lớn: 64x64
-House: nhiều tile
-Boss: lớn hơn nhân vật rõ rệt
-```
+Consistency rules:
+- consistent pixel density;
+- consistent body scale;
+- consistent lighting direction;
+- compatible palette;
+- consistent outline/shading language;
+- no arbitrary non-integer scaling that blurs pixel art.
 
-## Player
-Player không bắt buộc nằm trong đúng 32x32.
+Animation frames in one animation must keep fixed canvas, baseline, body scale, center, and pivot.
 
-Khuyến nghị:
-```text
-Animation cell: 48x48 hoặc 64x64
-```
+Prefer `Grid By Cell Size` for fixed-grid sprite sheets. Avoid Automatic Slice when a known grid exists.
 
-Lý do:
-- Có chỗ cho chuyển động.
-- Có chỗ cho tay/giáp.
-- Dễ xử lý animation chém.
+Preferred character/enemy pivot: Bottom Center unless a specific asset family has a documented reason otherwise.
 
-## Enemy
-- Quái nhỏ: 32x32.
-- Quái vừa: 48x48.
-- Elite: 48x48 hoặc 64x64.
-- Boss: 96x96 trở lên tùy thiết kế.
+## GD-11 — Map Construction and Sorting
 
----
+Do not use one giant rendered map image as the gameplay map.
 
-# 25. Quy tắc consistency của Pixel Art
+Build world content from:
+- Tilemaps;
+- Rule Tiles when useful;
+- environment prefabs;
+- interactable prefabs;
+- spawn points/zones.
 
-Mọi asset trong cùng game phải giữ:
-- Pixel density tương đồng.
-- Tỷ lệ nhân vật tương đồng.
-- Cùng hướng ánh sáng.
-- Cùng độ dày outline.
-- Cùng cách đổ bóng.
-- Palette tương thích.
-- Cùng mức độ chi tiết.
-- Không scale sprite pixel bằng tỷ lệ lẻ gây blur.
-
----
-
-# 26. Animation Standard
-
-Mọi frame của cùng animation phải:
-- Cùng kích thước canvas.
-- Cùng baseline.
-- Cùng vị trí tâm.
-- Cùng tỷ lệ cơ thể.
-- Cùng pivot.
-- Không thay đổi kích thước nhân vật giữa các frame.
-
-Ưu tiên slice:
-
-```text
-Grid By Cell Size
-```
-
-Không dùng `Automatic Slice` nếu sprite sheet có grid cố định.
-
----
-
-# 27. Pivot
-
-Đối với nhân vật và quái top-down, ưu tiên:
-
-**Bottom Center**
-
-Lý do:
-- Điểm chân ổn định.
-- Dễ căn sorting.
-- Dễ đặt collider.
-- Dễ đặt nhân vật trên terrain.
-
-Nếu một nhóm asset dùng pivot khác thì phải có lý do rõ ràng và phải nhất quán trong nhóm đó.
-
----
-
-# 28. Layer hình ảnh của map
-
-Không đặt mọi thứ vào một Tilemap duy nhất.
-
-Cấu trúc đề xuất:
+Suggested tilemap separation:
 
 ```text
 Grid
-│
 ├── Ground
 ├── GroundDetails
 ├── Water
@@ -782,311 +267,54 @@ Grid
 └── AbovePlayer
 ```
 
-Mục tiêu:
-- Dễ chỉnh map.
-- Dễ xử lý collision.
-- Dễ sorting.
-- Player có thể đi sau tán cây/object cao.
-- Dễ thay asset về sau.
-
----
-
-# 29. Sorting
-
-Game top-down phải hỗ trợ Y-Sorting hoặc hệ thống sorting tương đương.
-
-Mục tiêu:
-- Player đứng phía trước object khi ở thấp hơn.
-- Player đứng phía sau object khi ở cao hơn.
-- Tree/house có thể tách phần chân và phần trên nếu cần.
-
----
-
-# 30. Nguyên tắc xây map
-
-Map phải được xây từ asset module / tileset.
-
-Không dùng một ảnh map lớn làm gameplay trực tiếp.
-
-Map được ghép bằng:
-- Tilemap.
-- Rule Tile khi phù hợp.
-- Prefab decoration.
-- Prefab object.
-- Spawn point.
-- Enemy spawn zone.
-
-Lý do:
-- Dễ chỉnh sửa.
-- Dễ mở rộng.
-- Dễ collision.
-- Dễ thay asset.
-- Dễ tái sử dụng.
-- Dễ cho AI/Codex thao tác trong Unity.
-
----
-
-# 31. Architecture định hướng cho Unity
-
-Không hard-code nội dung riêng cho từng quái/vũ khí nếu có thể dùng data.
-
-Ưu tiên:
-- Prefab.
-- ScriptableObject.
-- Component-based architecture.
-- Data-driven design.
-
-## Enemy
-
-```text
-Enemy
-├── EnemyController
-├── EnemyStats
-├── Health
-├── Attack
-├── Movement
-├── Drop/SoulReward
-└── Collider
-```
-
-## Player
-
-```text
-Player
-├── PlayerController
-├── PlayerStats
-├── PlayerCombat
-├── PlayerHealth
-├── PlayerEquipment
-├── PlayerAnimation
-├── BodyRenderer
-├── WeaponPivot
-├── WeaponRenderer
-└── SlashVFX
-```
-
----
-
-# 32. Data đề xuất
-
-## EnemyData
-
-```text
-Name
-Rank
-HP
-ATK
-DEF
-Speed
-SoulReward
-Prefab
-Drops
-```
-
-## WeaponData
-
-```text
-Name
-Damage
-AttackSpeed
-CritBonus
-Range
-WeaponSprite
-SlashVFX
-```
-
-## ArmorData
-
-```text
-Name
-DefenseBonus
-OtherStats
-BodySprite / AnimationSet
-```
-
-## PlayerUpgradeData
-
-```text
-UpgradeType
-CurrentValue
-UpgradeCost
-UpgradeCap
-```
-
----
-
-# 33. Quy tắc dành cho AI / Codex
-
-Khi AI/Codex làm việc trên project:
-
-1. Đọc tài liệu này trước khi đưa ra thay đổi gameplay lớn.
-2. Không tự ý thêm Character Level.
-3. Không tự ý biến game thành linear stage progression.
-4. Không ép người chơi đánh boss thường.
-5. Không tự ý thêm nhiều weapon class trong giai đoạn đầu.
-6. Giữ weapon ban đầu là melee slash.
-7. Giữ đúng 5 Player Stat:
-   - HP
-   - ATK
-   - DEF
-   - AGI
-   - RAGE
-8. Quái dùng Rank S–F.
-9. Rank quái dựa trên Power Budget của:
-   - HP
-   - ATK
-   - DEF
-   - Speed
-10. Giữ kiến trúc visual:
-    - Body
-    - WeaponSprite
-    - SlashVFX
-11. Không tạo một sprite body mới cho mọi tổ hợp giáp + vũ khí.
-12. Không hard-code dữ liệu nếu có thể đưa vào ScriptableObject.
-13. Ưu tiên hệ thống tái sử dụng cho 5 thế giới còn lại.
-14. Hoàn thiện Nhân Giới trước khi mở rộng thế giới khác.
-15. Mọi thay đổi lớn về architecture/gameplay phải đối chiếu với tài liệu nguồn này.
-
----
-
-# 34. Phạm vi phát triển hiện tại
-
-Ưu tiên số 1:
-
-**Hoàn thiện Nhân Giới trước.**
-
-Không triển khai 6 vùng song song.
-
-Nhân Giới phải chứng minh được toàn bộ gameplay loop:
-
-```text
-Explore
-→ Combat
-→ Soul
-→ Upgrade
-→ Loot
-→ Equipment
-→ Optional Boss
-→ Main Boss
-→ Teleport Stone
-```
-
-Khi Nhân Giới hoàn chỉnh:
-- Dùng lại architecture hiện có.
-- Tạo vùng thứ hai.
-- Chủ yếu thay Map, Asset, Quái, Boss, Trang bị và cân bằng.
-
----
-
-# 35. Những thứ chưa chốt
-
-Các mục sau **chưa phải quyết định cuối cùng**:
-- Công thức damage.
-- Công thức DEF.
-- Crit multiplier.
-- Attack Speed cap.
-- AGI scaling.
-- RAGE scaling.
-- Giá Linh Hồn mỗi lần nâng.
-- Upgrade Cap cụ thể của từng vùng.
-- Soul Reward chính xác theo Rank.
-- Power Budget/ngưỡng điểm cụ thể của S–F.
-- Số boss thường trong Nhân Giới.
-- Boss chính của Nhân Giới.
-- Danh sách quái cụ thể.
-- Danh sách vũ khí cụ thể.
-- Shop.
-- Crafting.
-- Quest.
-- NPC dialogue.
-- Save system chi tiết.
-- Pipeline dùng AI để tạo asset.
-- Palette màu chính xác.
-- Bộ tileset cuối cùng.
-
-Các mục này sẽ được thiết kế sau dựa trên prototype thực tế.
-
----
-
-# 36. Tóm tắt quyết định đã chốt
-
-```text
-GAME
-2D top-down fantasy pixel-art action RPG
-
-PROGRESSION
-Không Level
-Linh Hồn → Trụ Linh Hồn → nâng chỉ số
-
-PLAYER STATS
-HP
-ATK
-DEF
-AGI
-RAGE (Crit + Attack Speed)
-
-ANTI-OVERFARM
-Không cấm farm
-Chỉ giới hạn Upgrade Cap theo từng thế giới
-Boss chính mở cap tiếp theo
-
-ENEMY RANK
-S / A / B / C / D / E / F
-
-NHÂN GIỚI
-Chủ yếu F và E
-
-ENEMY POWER
-HP + ATK + DEF + Speed
-Phân bổ theo Power Budget của Rank
-
-GAME FLOW
-Semi-open
-Không đi ải tuyến tính
-Không bắt buộc boss thường
-
-OPTIONAL BOSSES
-Cho trang bị/vũ khí mạnh
-Không bắt buộc
-
-MAIN BOSS
-Bắt buộc để sang thế giới tiếp theo
-Cho Đá Dịch Chuyển
-Mở Upgrade Cap
-
-WEAPON
-Hiện tại chỉ melee slash
-
-PLAYER VISUAL
-Body = thay theo giáp
-WeaponSprite = thay theo vũ khí
-SlashVFX = mặc định, có thể mở rộng sau
-
-ART
-2D top-down fantasy pixel art
-
-TILE
-32x32
-
-UNITY
-Tilemap
-Rule Tile khi phù hợp
-ScriptableObject
-Prefab
-Component-based
-Data-driven
-
-DEVELOPMENT
-Hoàn thiện Nhân Giới trước
-Sau đó mới mở rộng 5 vùng còn lại
-```
-
----
-
-# 37. Nguyên tắc cao nhất của project
-
-> **Ưu tiên hoàn thiện gameplay loop, khả năng tái sử dụng hệ thống và sự đồng nhất của asset hơn việc thêm nhiều tính năng.**
-
-> **Người chơi được tự do quyết định cách mạnh lên và cách khám phá; boss chính chỉ đóng vai trò mở khóa giới hạn sức mạnh và thế giới kế tiếp.**
-
-> **Nhân Giới là vertical slice hoàn chỉnh của toàn bộ game. Nếu Nhân Giới hoạt động tốt, 5 vùng sau phải có thể xây dựng dựa trên cùng một nền tảng kỹ thuật.**
+Top-down rendering must support Y-based sorting. Objects that sort dynamically against characters must share an appropriate dynamic Sorting Layer; always-above pieces such as canopies/roofs may use `AboveCharacters`.
+
+## GD-12 — Architecture Principles
+
+Prefer:
+- Prefabs;
+- ScriptableObjects for authoring data;
+- small reusable MonoBehaviours;
+- component-based systems;
+- explicit data ownership;
+- reusable foundations for later regions.
+
+Do not hard-code content-specific values in multiple runtime scripts when one authoring data asset can be the source of truth.
+
+HumanRealm must prove the reusable architecture before building the other five regions.
+
+## GD-13 — Boss and Region Progression
+
+Optional bosses:
+- optional;
+- stronger than normal enemies;
+- reward exploration with useful equipment/rewards;
+- must not gate the main path by default.
+
+Main region boss:
+- required to progress to the next region;
+- grants the region's Teleport Stone;
+- marks region progression completion;
+- unlocks a higher Upgrade Cap;
+- may grant signature equipment/rewards.
+
+Do not build Region 2 before HumanRealm proves the vertical slice.
+
+## GD-14 — Intentionally Undecided
+
+Do not treat these as final unless a later approved task explicitly locks them:
+- final damage formula;
+- final DEF formula;
+- crit multiplier;
+- Rage coefficients/caps;
+- Agility scaling;
+- final Soul upgrade cost curve;
+- exact Upgrade Caps by region;
+- exact Soul rewards by rank;
+- enemy-rank power weights/thresholds;
+- exact HumanRealm enemy/boss roster;
+- final HumanRealm size/layout;
+- shop/crafting/quest/dialogue systems;
+- final save format;
+- final AI asset-generation pipeline;
+- exact palette and production tileset.
