@@ -8,8 +8,8 @@
 - Genre: 2D top-down fantasy action RPG
 - Current region: HumanRealm
 - Current milestone: core player/combat/progression/equipment/loot/farming foundations are implemented
-- Latest completed cleanup: Task 16.5
-- **Next task: Task 17 — HumanRealm Graybox**
+- Latest completed task: Task 18 — Cave / Area Transition
+- **Current task: Task 19 — Village NPC Movement**
 
 ## Core loop
 

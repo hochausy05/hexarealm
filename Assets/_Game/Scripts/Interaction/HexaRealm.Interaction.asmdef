@@ -2,7 +2,8 @@
   "name": "HexaRealm.Interaction",
   "rootNamespace": "HexaRealm.Interaction",
   "references": [
-    "Unity.InputSystem"
+    "Unity.InputSystem",
+    "HexaRealm.Player"
   ],
   "includePlatforms": [],
   "excludePlatforms": [],

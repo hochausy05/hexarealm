@@ -107,6 +107,15 @@ namespace HexaRealm.Player
             playerController.SetMovementLocked(false);
         }
 
+        internal void ResetForAreaTransition()
+        {
+            IsDashing = false;
+            dashTimeRemaining = 0f;
+            dashDirection = Vector2.zero;
+            playerRigidbody.linearVelocity = Vector2.zero;
+            playerController.SetMovementLocked(false);
+        }
+
         private void OnDisable()
         {
             dashAction?.Disable();

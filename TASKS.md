@@ -4,18 +4,13 @@
 
 ## CURRENT WORK — AI READ THIS FIRST
 
-### [~] TASK 17 — HumanRealm Graybox  ← VERIFICATION PENDING
+### [~] TASK 19 — Village NPC Movement
 
-- **Weight:** Heavy
-- **Recommended model:** GPT-5.6 Sol
-- **Thinking:** High
-- **Depends on:** Tasks 01-16.5
-- **Design refs:** `GD-02`, `GD-08`, `GD-09`, `GD-10`, `GD-11`
-- **Goal:** create a playable placeholder HumanRealm world layout and test scale/travel/area spacing before final art.
-- **Initial scale:** roughly 100-128 tiles per axis, 32x32 base tile; not final.
-- **Must include:** readable village zone, wilderness/farm zones, roads, Soul Pillar/chest placements, cave entrance placeholder, main-boss route/area placeholder, enemy spawn-zone placements, world collision boundaries.
-- **Out of scope:** final pixel art, final decoration, production NPC behavior, cave scene transition, boss implementation, Region 2.
-- **Done when:** map can be explored end-to-end with current movement/camera/combat systems and gives useful travel/density feedback without breaking existing systems.
+- **Weight:** Medium
+- **Depends on:** Task 17 village area and Task 18 transition foundation
+- **Goal:** reusable ambient villagers looping Idle → Waypoint → Walk → Idle with authored village patrol paths.
+- **Out of scope:** dialogue, interactions, schedules, combat, pathfinding, Task 20.
+- **Done when:** manual Play Mode confirms stable physics-safe patrol movement and no HumanRealm regression.
 
 ## Status legend
 
@@ -46,9 +41,9 @@
 
 ## World phase
 
-- [~] T17 — HumanRealm Graybox
-- [ ] T18 — Cave / Area Transition
-- [ ] T19 — Village NPC Movement
+- [x] T17 — HumanRealm Graybox
+- [x] T18 — Cave / Area Transition
+- [~] T19 — Village NPC Movement  ← VERIFICATION PENDING
 
 ## Boss / region progression
 

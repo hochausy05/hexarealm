@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using HexaRealm.Core;
 using HexaRealm.Enemy;
+using HexaRealm.Interaction;
 using HexaRealm.Loot;
+using HexaRealm.Player;
 using HexaRealm.Progression;
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -79,6 +81,8 @@ namespace HexaRealm.EditorTools
             Tile terrain = CreateTile("SecondaryTerrain", new Color32(73, 126, 67, 255), new Color32(61, 108, 57, 255), false);
             Tile collision = CreateTile("Collision", new Color32(255, 0, 255, 255), new Color32(255, 0, 255, 255), true);
 
+            EnsurePlayerPrefabTransition();
+
             Scene scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
             GameObject root = NewObject("HumanRealm");
             GameObject systems = NewObject("Systems", root.transform);
@@ -130,6 +134,7 @@ namespace HexaRealm.EditorTools
             CreateSpawnZone("EasternFarmingSpawnZone", new[] { new Vector2(20, -7), new Vector2(35, -11), new Vector2(43, 3), new Vector2(25, 13) }, 2, 3, player.transform, zones.transform);
 
             CreateMarkers(markers.transform);
+            CreateTask18Cave(world.transform, gameplay.transform);
 
             ground.CompressBounds();
             details.CompressBounds();
@@ -175,9 +180,21 @@ namespace HexaRealm.EditorTools
                 groundMap.cellBounds.size.x != 112 || groundMap.cellBounds.size.y != 112)
                 errors.Add("Ground Tilemap bounds are not the expected 112x112 cells at [-56,55].");
 
+            Tilemap collisionMap = grid != null && grid.Find("Collision") != null ? grid.Find("Collision").GetComponent<Tilemap>() : null;
+            if (collisionMap == null || collisionMap.cellBounds.xMin != Min - 1 || collisionMap.cellBounds.yMin != Min - 1 ||
+                collisionMap.cellBounds.size.x != 114 || collisionMap.cellBounds.size.y != 114)
+                errors.Add("Collision Tilemap bounds are not the expected 114x114 exterior ring at [-57,56].");
+            else
+            {
+                Vector3Int[] perimeterCorners = { new Vector3Int(Min - 1, Min - 1, 0), new Vector3Int(Max + 1, Min - 1, 0),
+                    new Vector3Int(Min - 1, Max + 1, 0), new Vector3Int(Max + 1, Max + 1, 0) };
+                foreach (Vector3Int corner in perimeterCorners)
+                    if (collisionMap.GetTile(corner) == null) errors.Add("Collision perimeter corner is missing at " + corner + ".");
+            }
+
             Transform collisionTransform = grid != null ? grid.Find("Collision") : null;
             if (collisionTransform == null || collisionTransform.GetComponent<TilemapCollider2D>() == null ||
-                collisionTransform.GetComponent<CompositeCollider2D>() == null || collisionTransform.GetComponent<Rigidbody2D>() == null)
+                collisionTransform.GetComponent<Rigidbody2D>() == null)
                 errors.Add("Collision Tilemap collider setup is incomplete.");
 
             CameraFollow2D follow = UnityEngine.Object.FindAnyObjectByType<CameraFollow2D>();
@@ -232,6 +249,8 @@ namespace HexaRealm.EditorTools
             if (GameObject.Find("HumanRealm/Markers/MainBossArea/MainBossAreaMarker") == null)
                 errors.Add("MainBossAreaMarker is missing.");
 
+            ValidateTask18(errors, root);
+
             string[] dependencies = AssetDatabase.GetDependencies(ScenePath, true);
             foreach (string dependency in dependencies)
             {
@@ -248,6 +267,32 @@ namespace HexaRealm.EditorTools
         public static void ValidateSceneBatch()
         {
             ValidateScene();
+        }
+
+        [MenuItem("HexaRealm/Task 17/Validate HumanRealm Physics Diagnostics")]
+        public static void ValidatePhysicsDiagnostics()
+        {
+            Scene scene = EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            Physics2D.SyncTransforms();
+            GameObject root = FindRoot(scene, "HumanRealm");
+            Transform grid = root != null ? root.transform.Find("World/Grid") : null;
+            GameObject collisionObject = grid != null && grid.Find("Collision") != null ? grid.Find("Collision").gameObject : null;
+            TilemapCollider2D tilemapCollider = collisionObject != null ? collisionObject.GetComponent<TilemapCollider2D>() : null;
+            CompositeCollider2D composite = collisionObject != null ? collisionObject.GetComponent<CompositeCollider2D>() : null;
+            Rigidbody2D worldBody = collisionObject != null ? collisionObject.GetComponent<Rigidbody2D>() : null;
+            int playerLayer = LayerMask.NameToLayer("Player");
+            int worldLayer = LayerMask.NameToLayer("World");
+            bool ignored = playerLayer < 0 || worldLayer < 0 || Physics2D.GetIgnoreLayerCollision(playerLayer, worldLayer);
+            Debug.Log($"TASK17_PHYSICS playerLayer={playerLayer} worldLayer={worldLayer} ignored={ignored} " +
+                      $"tilemapEnabled={tilemapCollider != null && tilemapCollider.enabled} tilemapTrigger={tilemapCollider != null && tilemapCollider.isTrigger} " +
+                      $"tilemapShapes={(tilemapCollider != null ? tilemapCollider.shapeCount : -1)} " +
+                      $"compositeEnabled={composite != null && composite.enabled} compositeTrigger={composite != null && composite.isTrigger} " +
+                      $"compositePaths={(composite != null ? composite.pathCount : -1)} worldBody={(worldBody != null ? worldBody.bodyType.ToString() : "missing")}");
+        }
+
+        public static void ValidatePhysicsDiagnosticsBatch()
+        {
+            ValidatePhysicsDiagnostics();
         }
 
         private static GameObject RequirePrefab(string path, List<string> errors)
@@ -332,16 +377,12 @@ namespace HexaRealm.EditorTools
 
         private static Tilemap CreateCollisionTilemap(Transform parent)
         {
-            GameObject go = NewObject("Collision", parent, typeof(Tilemap), typeof(TilemapRenderer), typeof(Rigidbody2D), typeof(CompositeCollider2D), typeof(TilemapCollider2D));
+            GameObject go = NewObject("Collision", parent, typeof(Tilemap), typeof(TilemapRenderer), typeof(Rigidbody2D), typeof(TilemapCollider2D));
             go.layer = LayerMask.NameToLayer("World");
             go.GetComponent<TilemapRenderer>().enabled = false;
             Rigidbody2D body = go.GetComponent<Rigidbody2D>();
             body.bodyType = RigidbodyType2D.Static;
             body.simulated = true;
-            CompositeCollider2D composite = go.GetComponent<CompositeCollider2D>();
-            composite.geometryType = CompositeCollider2D.GeometryType.Polygons;
-            TilemapCollider2D tilemapCollider = go.GetComponent<TilemapCollider2D>();
-            tilemapCollider.compositeOperation = Collider2D.CompositeOperation.Merge;
             return go.GetComponent<Tilemap>();
         }
 
@@ -414,6 +455,13 @@ namespace HexaRealm.EditorTools
             FillRect(collisions, collision, Min, Max, Max, Max);
             FillRect(collisions, collision, Min, Min, Min, Max);
             FillRect(collisions, collision, Max, Min, Max, Max);
+            // Keep the physical barrier just outside the 112x112 playable cells. This prevents
+            // high-velocity Rigidbody2D contact from stepping across an edge coincident with the
+            // outermost walkable row while preserving the intended map area.
+            FillRect(collisions, collision, Min - 1, Min - 1, Max + 1, Min - 1);
+            FillRect(collisions, collision, Min - 1, Max + 1, Max + 1, Max + 1);
+            FillRect(collisions, collision, Min - 1, Min - 1, Min - 1, Max + 1);
+            FillRect(collisions, collision, Max + 1, Min - 1, Max + 1, Max + 1);
             FillRect(visuals, blocker, Min, Min, Max, Min);
             FillRect(visuals, blocker, Min, Max, Max, Max);
             FillRect(visuals, blocker, Min, Min, Min, Max);
@@ -563,6 +611,102 @@ namespace HexaRealm.EditorTools
             Marker("CentralCrossroadsMarker", Vector2.zero, navigation.transform);
             Marker("WesternForestMarker", new Vector2(-35, 7), navigation.transform);
             Marker("EasternFarmingAreaMarker", new Vector2(34, -4), navigation.transform);
+        }
+
+        private static void CreateTask18Cave(Transform world, Transform gameplay)
+        {
+            Tile grass = AssetDatabase.LoadAssetAtPath<Tile>(TileFolder + "/Grass.asset");
+            Tile dirt = AssetDatabase.LoadAssetAtPath<Tile>(TileFolder + "/Dirt.asset");
+            Tile blocker = AssetDatabase.LoadAssetAtPath<Tile>(TileFolder + "/BlockerCliff.asset");
+            Tile collision = AssetDatabase.LoadAssetAtPath<Tile>(TileFolder + "/Collision.asset");
+
+            GameObject subAreas = NewObject("SubAreas", world);
+            GameObject cave = NewObject("Cave01", subAreas.transform);
+            cave.transform.position = new Vector3(160f, 0f, 0f);
+            GameObject gridObject = NewObject("Grid", cave.transform, typeof(Grid));
+            Tilemap ground = CreateTilemap("Ground", gridObject.transform, "Ground", 0);
+            Tilemap details = CreateTilemap("GroundDetails", gridObject.transform, "Ground", 1);
+            Tilemap caveCollision = CreateCollisionTilemap(gridObject.transform);
+
+            FillRect(ground, grass, -14, -10, 13, 9);
+            FillRect(details, dirt, -10, -2, 9, 1);
+            FillRect(caveCollision, collision, -15, -11, 14, -11);
+            FillRect(caveCollision, collision, -15, 10, 14, 10);
+            FillRect(caveCollision, collision, -15, -11, -15, 10);
+            FillRect(caveCollision, collision, 14, -11, 14, 10);
+            FillRect(details, blocker, -14, -10, 13, -10);
+            FillRect(details, blocker, -14, 9, 13, 9);
+            FillRect(details, blocker, -14, -10, -14, 9);
+            FillRect(details, blocker, 13, -10, 13, 9);
+
+            Transform entry = CreateDestination("CaveEntryPoint", new Vector2(0f, 4f), cave.transform);
+            Transform exit = CreatePortal("CaveExit", new Vector2(0f, -4f), cave.transform, dirt.sprite, new Color32(120, 80, 180, 255));
+
+            Transform outsideReturn = CreateDestination("CaveReturnPoint", new Vector2(-38f, 27f), gameplay);
+            GameObject areaTransitions = NewObject("AreaTransitions", gameplay);
+            CreatePortal("CaveEntrance", new Vector2(-38f, 30f), areaTransitions.transform, blocker.sprite, new Color32(90, 70, 55, 255), entry);
+            SerializedObject exitPortal = new SerializedObject(exit.GetComponent<AreaTransitionPortal>());
+            exitPortal.FindProperty("destination").objectReferenceValue = outsideReturn;
+            exitPortal.ApplyModifiedPropertiesWithoutUndo();
+
+            ground.CompressBounds();
+            details.CompressBounds();
+            caveCollision.CompressBounds();
+        }
+
+        private static Transform CreateDestination(string name, Vector2 position, Transform parent)
+        {
+            GameObject destination = NewObject(name, parent);
+            destination.transform.position = position;
+            return destination.transform;
+        }
+
+        private static Transform CreatePortal(string name, Vector2 position, Transform parent, Sprite sprite, Color32 color, Transform destination = null)
+        {
+            GameObject portal = NewObject(name, parent, typeof(BoxCollider2D), typeof(SpriteRenderer), typeof(AreaTransitionPortal));
+            int interactableLayer = LayerMask.NameToLayer("Interactable");
+            portal.layer = interactableLayer >= 0 ? interactableLayer : 0;
+            portal.transform.position = position;
+            BoxCollider2D collider = portal.GetComponent<BoxCollider2D>();
+            collider.size = new Vector2(1.5f, 1.5f);
+            SpriteRenderer renderer = portal.GetComponent<SpriteRenderer>();
+            renderer.sprite = sprite;
+            renderer.color = color;
+            renderer.sortingLayerName = "Environment";
+            renderer.sortingOrder = 5;
+            SerializedObject serialized = new SerializedObject(portal.GetComponent<AreaTransitionPortal>());
+            serialized.FindProperty("destination").objectReferenceValue = destination;
+            serialized.ApplyModifiedPropertiesWithoutUndo();
+            return portal.transform;
+        }
+
+        private static void ValidateTask18(List<string> errors, GameObject root)
+        {
+            AreaTransitionPortal entrance = root != null ? root.transform.Find("Gameplay/AreaTransitions/CaveEntrance")?.GetComponent<AreaTransitionPortal>() : null;
+            AreaTransitionPortal exit = root != null ? root.transform.Find("World/SubAreas/Cave01/CaveExit")?.GetComponent<AreaTransitionPortal>() : null;
+            Transform entry = root != null ? root.transform.Find("World/SubAreas/Cave01/CaveEntryPoint") : null;
+            Transform returnPoint = root != null ? root.transform.Find("Gameplay/CaveReturnPoint") : null;
+            Transform caveCollision = root != null ? root.transform.Find("World/SubAreas/Cave01/Grid/Collision") : null;
+            if (entrance == null || entrance.Destination != entry) errors.Add("CaveEntrance destination is invalid.");
+            if (exit == null || exit.Destination != returnPoint) errors.Add("CaveExit destination is invalid.");
+            if (entry == null || returnPoint == null) errors.Add("Task 18 destination point is missing.");
+            if (caveCollision == null || caveCollision.GetComponent<TilemapCollider2D>() == null || caveCollision.GetComponent<Rigidbody2D>() == null)
+                errors.Add("Cave collision setup is incomplete.");
+            if (root != null && root.transform.Find("Gameplay/Player")?.GetComponent<PlayerAreaTransition>() == null)
+                errors.Add("PlayerAreaTransition is missing from the Player.");
+        }
+
+        private static void EnsurePlayerPrefabTransition()
+        {
+            GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(PlayerPrefabPath);
+            if (prefab == null || prefab.GetComponent<PlayerAreaTransition>() != null) return;
+
+            GameObject contents = PrefabUtility.LoadPrefabContents(PlayerPrefabPath);
+            if (contents.GetComponent<PlayerAreaTransition>() == null)
+                contents.AddComponent<PlayerAreaTransition>();
+            PrefabUtility.SaveAsPrefabAsset(contents, PlayerPrefabPath);
+            PrefabUtility.UnloadPrefabContents(contents);
+            AssetDatabase.ImportAsset(PlayerPrefabPath, ImportAssetOptions.ForceSynchronousImport);
         }
 
         private static void Marker(string name, Vector2 position, Transform parent)

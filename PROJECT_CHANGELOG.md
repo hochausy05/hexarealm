@@ -1,5 +1,22 @@
 # PROJECT_CHANGELOG — HexaRealm
 
+## 2026-09-10 — Task 19: Village NPC Movement
+- Thêm `NPCPatrolPath` và `VillageNPCMovement` cho vòng Idle → Walk → Idle bằng Rigidbody2D, không có pathfinding hay tương tác.
+- Thêm prefab `Villager_Prototype` và tool authoring hẹp để đặt 3 dân làng cùng 3 patrol path trong HumanRealm.
+
+## 2026-09-10 — Task 18: Cave / Area Transition
+- Thêm `AreaTransitionPortal` dùng lại `IInteractable` và `PlayerAreaTransition` để dịch chuyển cùng Player trong một scene, xóa velocity Rigidbody2D và reset dash tối thiểu.
+- Mở rộng builder để tạo Cave01 graybox 28x20 tile tại offset X=160, có collision biên, CaveEntrance/CaveExit và các điểm `CaveEntryPoint`/`CaveReturnPoint`.
+- Giữ T18 ở trạng thái chờ kiểm tra Play Mode; không tải scene và không thêm nội dung Cave sản xuất.
+
+## 2026-09-10 — Task 17.2: Chẩn đoán collision runtime HumanRealm
+- Xác định `CompositeCollider2D` không tạo path khi scene vừa vào Play Mode (`pathCount=0`) dù tile và component hợp lệ; toggle collider mới ép tạo geometry.
+- Loại bỏ Composite khỏi Collision Tilemap, giữ `TilemapCollider2D` + `Rigidbody2D` tĩnh; runtime tạo 1888 shape ngay khi load và builder đã đồng bộ.
+
+## 2026-09-10 — Task 17.1: Sửa collision biên HumanRealm
+- Bổ sung vòng ô collision vật lý một ô bên ngoài chu vi 112x112, giữ nguyên vùng chơi và toàn bộ tuyến đường.
+- Đồng bộ `Task17HumanRealmBuilder` để tái tạo đúng perimeter với TilemapCollider2D + CompositeCollider2D + Rigidbody2D tĩnh.
+
 ## 2026-09-10 — Task 17: Graybox HumanRealm
 - Thêm scene `HumanRealm` 112x112 bằng Tilemap mô-đun, gồm làng khởi đầu, ngã tư trung tâm, rừng phía tây, đồng ruộng phía đông, lối hang và khu boss placeholder.
 - Tái sử dụng Player, CameraFollow2D, 3 Soul Pillar, 3 Loot Chest và 3 EnemySpawnZone Slime_F với tối đa 9 Slime hoạt động.
