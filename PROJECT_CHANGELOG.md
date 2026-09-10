@@ -1,5 +1,10 @@
 # PROJECT_CHANGELOG — HexaRealm
 
+## 2026-09-10 — Task 17: Graybox HumanRealm
+- Thêm scene `HumanRealm` 112x112 bằng Tilemap mô-đun, gồm làng khởi đầu, ngã tư trung tâm, rừng phía tây, đồng ruộng phía đông, lối hang và khu boss placeholder.
+- Tái sử dụng Player, CameraFollow2D, 3 Soul Pillar, 3 Loot Chest và 3 EnemySpawnZone Slime_F với tối đa 9 Slime hoạt động.
+- Thêm bộ tile PNG placeholder 32x32 cùng collision biên/vật cản; giữ Task 17 ở trạng thái chờ kiểm tra Play Mode và quy mô bản đồ.
+
 ## 2026-09-10 — Task 16.5: Dọn TechnicalTest và đồng bộ visual runtime
 - Đồng bộ preview Player với TrainingArmor + BasicSword nhưng vẫn giữ body mặc định để unequip an toàn.
 - Xóa direct `Slime_F` dư khỏi `TechnicalTest`; `SlimeSpawnZone` tiếp tục là nguồn spawn runtime.

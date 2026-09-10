@@ -4,7 +4,7 @@
 
 ## CURRENT WORK — AI READ THIS FIRST
 
-### [ ] TASK 17 — HumanRealm Graybox  ← NEXT
+### [~] TASK 17 — HumanRealm Graybox  ← VERIFICATION PENDING
 
 - **Weight:** Heavy
 - **Recommended model:** GPT-5.6 Sol
@@ -46,7 +46,7 @@
 
 ## World phase
 
-- [ ] T17 — HumanRealm Graybox
+- [~] T17 — HumanRealm Graybox
 - [ ] T18 — Cave / Area Transition
 - [ ] T19 — Village NPC Movement
 
