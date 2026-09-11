@@ -1,5 +1,10 @@
 # PROJECT_CHANGELOG — HexaRealm
 
+## 2026-09-11 — Task 20: Optional Boss Framework
+- Thêm nền tảng boss độc lập gồm BossData/Runtime/Health, arena, điều khiển combat, melee sweep và charge có telegraph.
+- Thêm prefab OptionalBoss_Prototype, reward Soul cố định, boss HP bar và authoring tool hẹp cho HumanRealm side area.
+- Boss reset về home khi rời arena, hồi HP nếu còn sống; boss chết chỉ thưởng một lần trong session.
+
 ## 2026-09-10 — Task 19: Village NPC Movement
 - Thêm `NPCPatrolPath` và `VillageNPCMovement` cho vòng Idle → Walk → Idle bằng Rigidbody2D, không có pathfinding hay tương tác.
 - Thêm prefab `Villager_Prototype` và tool authoring hẹp để đặt 3 dân làng cùng 3 patrol path trong HumanRealm.

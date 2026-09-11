@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace HexaRealm.Enemy
 {
-    internal static class EnemyTargeting
+    public static class EnemyTargeting
     {
         public static bool TryFindDamageReceiver(
             Transform start,

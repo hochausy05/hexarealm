@@ -4,13 +4,13 @@
 
 ## CURRENT WORK — AI READ THIS FIRST
 
-### [~] TASK 19 — Village NPC Movement
+### [~] TASK 20 — Optional Boss Framework
 
 - **Weight:** Medium
-- **Depends on:** Task 17 village area and Task 18 transition foundation
-- **Goal:** reusable ambient villagers looping Idle → Waypoint → Walk → Idle with authored village patrol paths.
-- **Out of scope:** dialogue, interactions, schedules, combat, pathfinding, Task 20.
-- **Done when:** manual Play Mode confirms stable physics-safe patrol movement and no HumanRealm regression.
+- **Depends on:** HumanRealm combat, loot, and world foundations.
+- **Goal:** reusable optional-boss encounter, attacks, health UI, reset, and fixed reward.
+- **Out of scope:** HumanRealm Main Boss, Teleport Stone, region progression, persistence, Task 21.
+- **Done when:** manual Play Mode confirms the complete optional-boss encounter flow and no regression.
 
 ## Status legend
 
@@ -43,11 +43,11 @@
 
 - [x] T17 — HumanRealm Graybox
 - [x] T18 — Cave / Area Transition
-- [~] T19 — Village NPC Movement  ← VERIFICATION PENDING
+- [x] T19 — Village NPC Movement
 
 ## Boss / region progression
 
-- [ ] T20 — Optional Boss Framework
+- [~] T20 — Optional Boss Framework  ← VERIFICATION PENDING
 - [ ] T21 — HumanRealm Main Boss + Teleport Stone
 
 ## Persistence

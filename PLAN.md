@@ -4,13 +4,13 @@
 
 ## CURRENT PHASE
 
-**Phase E — HumanRealm World Foundation**
+**Phase F — Boss / Region Progression**
 
-- Previous milestone: Phase D foundations complete through Task 16.5.
-- **Next: Task 17 — HumanRealm Graybox.**
-- Then: Task 18 Cave/Area Transition, Task 19 Village NPC Movement.
+- Previous milestone: Phase E HumanRealm world foundation complete through Task 19.
+- **Next: Task 20 — Optional Boss Framework.**
+- Then: Task 21 HumanRealm Main Boss + Teleport Stone.
 
-Current goal: move from `TechnicalTest` into a playable HumanRealm world graybox without final art.
+Current goal: prove HumanRealm's optional-boss framework before main-boss region progression.
 
 ## Development order
 
