@@ -92,6 +92,8 @@ Do not manually break `.meta`/GUID references.
 
 Do not change Render Pipeline, Input System, Sorting Layers, Physics Settings, packages, or Build Settings unless the active task requires it.
 
+For Unity authoring that can be completed manually in a few minutes, prefer explicit manual user steps over brittle Editor automation, hierarchy hard-coding, or scene/prefab builder scripts.
+
 Use Unity/MCP/Editor APIs for scene, prefab, hierarchy, inspector, console, and asset-import operations when useful. Use direct text/file access for scripts and docs.
 
 If MCP cannot control Play Mode, do not build a complicated workaround just to simulate a click. Report the manual verification needed.

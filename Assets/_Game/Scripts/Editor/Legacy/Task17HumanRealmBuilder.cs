@@ -1,3 +1,5 @@
+// LEGACY: Historical Task 17 authoring script. Do not use this file for current scene or prefab generation.
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -33,7 +35,6 @@ namespace HexaRealm.EditorTools
         private const int Min = -56;
         private const int Max = 55;
 
-        [MenuItem("HexaRealm/Task 17/Validate Foundation")]
         public static void ValidateFoundation()
         {
             var errors = new List<string>();
@@ -65,7 +66,6 @@ namespace HexaRealm.EditorTools
             ValidateFoundation();
         }
 
-        [MenuItem("HexaRealm/Task 17/Build HumanRealm Graybox")]
         public static void Build()
         {
             ValidateFoundation();
@@ -157,7 +157,6 @@ namespace HexaRealm.EditorTools
             ValidateScene();
         }
 
-        [MenuItem("HexaRealm/Task 17/Validate HumanRealm Scene")]
         public static void ValidateScene()
         {
             var errors = new List<string>();
@@ -269,7 +268,6 @@ namespace HexaRealm.EditorTools
             ValidateScene();
         }
 
-        [MenuItem("HexaRealm/Task 17/Validate HumanRealm Physics Diagnostics")]
         public static void ValidatePhysicsDiagnostics()
         {
             Scene scene = EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);

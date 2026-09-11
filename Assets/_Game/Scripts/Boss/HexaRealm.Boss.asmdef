@@ -1,0 +1,19 @@
+{
+  "name": "HexaRealm.Boss",
+  "rootNamespace": "HexaRealm.Boss",
+  "references": [
+    "HexaRealm.Combat",
+    "HexaRealm.Player",
+    "HexaRealm.Loot",
+    "Unity.ugui"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

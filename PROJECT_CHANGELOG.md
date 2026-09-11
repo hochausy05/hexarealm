@@ -1,5 +1,24 @@
 # PROJECT_CHANGELOG — HexaRealm
 
+## 2026-09-12 — Dọn công cụ Editor authoring cũ
+- Chuyển các builder Task 17/19/20/21 và utility tạo Boss vào `Editor/Legacy`, gỡ toàn bộ menu thực thi để tránh ghi đè scene, prefab hoặc dữ liệu đã hoàn thiện.
+- Xóa hai thư mục script trùng tên số nhiều `Bosses`/`Enemies` vì rỗng; giữ nguyên các thư mục runtime `Boss`/`Enemy`.
+
+## 2026-09-12 — Sửa reward, tiến trình và HP UI của Boss
+- Chỉ đánh dấu Boss loot đã trao sau khi `PlayerLootReceiver` nhận thành công, tránh mất hoặc nhân đôi reward khi cấu hình lỗi.
+- Main Boss tự tìm tiến trình trên Player đang hoạt động, lấy Upgrade Cap từ cùng Player và vẫn giữ các reference đã gán hợp lệ.
+- Ngăn HP UI tự tắt GameObject chứa component; đồng thời từ chối mọi giá trị vô hạn/NaN trong `BossData`.
+
+## 2026-09-11 — Sửa nền tảng runtime Boss
+- Loại bỏ vòng lặp `RequireComponent`, ngăn component Boss gốc bị trùng và tăng kiểm tra cấu hình/BossData trước khi chạy.
+- Hỗ trợ danh sách từ một đòn đánh trở lên theo thứ tự xác định, hủy đòn đúng vòng đời và dừng charge an toàn.
+- Theo dõi từng collider của một Player trong BossArena, chỉ disengage/reset khi Player đã rời hoàn toàn.
+
+## 2026-09-11 — Task 21: Main Boss và tiến trình HumanRealm
+- Thêm trạng thái tiến trình vùng theo session, Teleport Stone HumanRealm và mở khóa Region2 theo trạng thái dẫn xuất.
+- Thêm reward adapter cho boss để mở Upgrade Cap tuyệt đối, không đổi Soul hay các điểm nâng cấp hiện có.
+- Thêm tool authoring hẹp để tạo MainBoss_Prototype, dữ liệu reward riêng và đặt encounter tại MainBossArea phía bắc.
+
 ## 2026-09-11 — Task 20: Optional Boss Framework
 - Thêm nền tảng boss độc lập gồm BossData/Runtime/Health, arena, điều khiển combat, melee sweep và charge có telegraph.
 - Thêm prefab OptionalBoss_Prototype, reward Soul cố định, boss HP bar và authoring tool hẹp cho HumanRealm side area.

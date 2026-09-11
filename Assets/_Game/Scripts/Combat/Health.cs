@@ -7,7 +7,7 @@ namespace HexaRealm.Combat
     {
         [SerializeField, Min(0f)] private float maxHealth = 100f;
 
-        private float currentHealth;
+        [SerializeField] private float currentHealth;
         private bool isDead;
         private bool isInitialized;
 
@@ -76,6 +76,37 @@ namespace HexaRealm.Combat
             if (diedNow)
             {
                 Died?.Invoke();
+            }
+        }
+
+        /// <summary>
+        /// Sets a new maximum and begins a fresh life at that maximum. This is intended for
+        /// explicit spawn/reset boundaries; ordinary healing must continue to use <see cref="Heal"/>.
+        /// </summary>
+        public void ResetToMaxHealth(float value)
+        {
+            float newMaxHealth = SanitizeMaxHealth(value);
+
+            if (!isInitialized)
+            {
+                Initialize(newMaxHealth);
+                return;
+            }
+
+            float oldMaxHealth = maxHealth;
+            float oldCurrentHealth = currentHealth;
+            maxHealth = newMaxHealth;
+            currentHealth = maxHealth;
+            isDead = currentHealth <= 0f;
+
+            if (!Mathf.Approximately(oldMaxHealth, maxHealth))
+            {
+                MaxHealthChanged?.Invoke(oldMaxHealth, maxHealth);
+            }
+
+            if (!Mathf.Approximately(oldCurrentHealth, currentHealth))
+            {
+                HealthChanged?.Invoke(oldCurrentHealth, currentHealth);
             }
         }
 

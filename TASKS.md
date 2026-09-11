@@ -4,13 +4,14 @@
 
 ## CURRENT WORK — AI READ THIS FIRST
 
-### [~] TASK 20 — Optional Boss Framework
+### [~] TASK 20–21 — Boss Rebuild Verification
 
-- **Weight:** Medium
-- **Depends on:** HumanRealm combat, loot, and world foundations.
-- **Goal:** reusable optional-boss encounter, attacks, health UI, reset, and fixed reward.
-- **Out of scope:** HumanRealm Main Boss, Teleport Stone, region progression, persistence, Task 21.
-- **Done when:** manual Play Mode confirms the complete optional-boss encounter flow and no regression.
+- **Weight:** Heavy
+- **Depends on:** HumanRealm foundations.
+- **Goal:** clean shared Boss combat foundation, optional encounter, and main-boss session progression.
+- **Out of scope:** Region 2 content, persistence, Task 22.
+- **Runtime repair:** fixed controller dependencies, finite BossData validation, ordered attacks, collider-safe arena exit, reward delivery state, automatic Player progression resolution, and HP UI lifecycle safety; Play Mode verification remains.
+- **Done when:** manual Play Mode confirms one-hit Boss damage, optional reset/reward, and idempotent main-boss progression.
 
 ## Status legend
 
@@ -47,8 +48,8 @@
 
 ## Boss / region progression
 
-- [~] T20 — Optional Boss Framework  ← VERIFICATION PENDING
-- [ ] T21 — HumanRealm Main Boss + Teleport Stone
+- [~] T20 — Optional Boss Framework  ← REBUILD VERIFICATION PENDING
+- [~] T21 — HumanRealm Main Boss + Teleport Stone  ← VERIFICATION PENDING
 
 ## Persistence
 

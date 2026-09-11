@@ -8,8 +8,8 @@
 - Genre: 2D top-down fantasy action RPG
 - Current region: HumanRealm
 - Current milestone: core player/combat/progression/equipment/loot/farming foundations are implemented
-- Latest completed task: Task 19 — Village NPC Movement
-- **Current task: Task 20 — Optional Boss Framework**
+- Latest completed task: Task 20 — Optional Boss Framework
+- **Current task: Task 21 — HumanRealm Main Boss + Teleport Stone**
 
 ## Core loop
 

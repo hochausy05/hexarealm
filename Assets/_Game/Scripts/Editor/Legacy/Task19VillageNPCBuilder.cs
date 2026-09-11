@@ -1,3 +1,5 @@
+// LEGACY: Historical Task 19 authoring script. Do not use this file for current scene or prefab generation.
+
 using HexaRealm.Core;
 using HexaRealm.NPC;
 using UnityEditor;
@@ -18,7 +20,6 @@ namespace HexaRealm.EditorTools
         private const string PrefabPath = PrefabFolder + "/Villager_Prototype.prefab";
         private const string PlaceholderSpritePath = "Assets/_Game/Art/Placeholders/SlimePlaceholder.png";
 
-        [MenuItem("HexaRealm/Task 19/Build Village NPC Movement")]
         public static void Build()
         {
             EnsureFolder("Assets/_Game/Prefabs");

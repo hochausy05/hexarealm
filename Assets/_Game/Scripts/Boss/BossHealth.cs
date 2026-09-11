@@ -3,38 +3,42 @@ using UnityEngine;
 
 namespace HexaRealm.Boss
 {
-    [DefaultExecutionOrder(-100)]
+    [DisallowMultipleComponent]
     [RequireComponent(typeof(BossRuntime), typeof(Health))]
     public sealed class BossHealth : MonoBehaviour, IRawDamageReceiver
     {
         [SerializeField] private BossRuntime bossRuntime;
         [SerializeField] private Health health;
         public Health Health => health;
+        public bool HasResolvedReferences => bossRuntime != null && bossRuntime.HasValidData && health != null;
 
         private void Awake()
         {
-            ResolveReferences();
-            if (bossRuntime == null || bossRuntime.Data == null || health == null)
+            if (!ResolveAndValidateReferences())
             {
                 Debug.LogError("BossHealth requires BossRuntime with BossData and Health.", this);
                 enabled = false;
                 return;
             }
-            health.Initialize(bossRuntime.Data.MaxHealth);
+
+            // Health may already have run Awake. This explicit spawn operation is therefore
+            // independent of component Awake order and makes BossData authoritative.
+            health.ResetToMaxHealth(bossRuntime.Data.MaxHealth);
         }
 
-        public float TakeRawDamage(float rawDamage) => bossRuntime == null || bossRuntime.Data == null || health == null
+        public float TakeRawDamage(float rawDamage) => !HasResolvedReferences
             ? 0f : health.ApplyDamage(DamageCalculator.CalculateFinalDamage(rawDamage, bossRuntime.Data.Defense));
-
-        public void RestoreFullHealth()
-        {
-            if (health != null && !health.IsDead) health.Heal(health.MaxHealth - health.CurrentHealth);
-        }
 
         private void ResolveReferences()
         {
-            if (bossRuntime == null) bossRuntime = GetComponent<BossRuntime>();
-            if (health == null) health = GetComponent<Health>();
+            if (bossRuntime == null || bossRuntime.gameObject != gameObject) bossRuntime = GetComponent<BossRuntime>();
+            if (health == null || health.gameObject != gameObject) health = GetComponent<Health>();
+        }
+
+        internal bool ResolveAndValidateReferences()
+        {
+            ResolveReferences();
+            return HasResolvedReferences;
         }
     }
 }

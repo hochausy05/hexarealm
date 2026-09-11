@@ -210,6 +210,7 @@ GameObject:
   - component: {fileID: 3371355901857076040}
   - component: {fileID: 3371355901857076041}
   - component: {fileID: 2540864164774777108}
+  - component: {fileID: 3713134635168916862}
   m_Layer: 8
   m_Name: Player
   m_TagString: Untagged
@@ -569,6 +570,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b46bcaaf3cfad8409195739c703a631, type: 3}
   m_Name: 
   m_EditorClassIdentifier: HexaRealm.Player::HexaRealm.Player.PlayerAreaTransition
+--- !u!114 &3713134635168916862
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 330569631432920027}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce6e9af547867f849ac6aa5ae57a1622, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HexaRealm.Progression::HexaRealm.Progression.PlayerRegionProgression
+  completedRegions: 
+  teleportStoneRegions: 
 --- !u!1 &2079261062219425829
 GameObject:
   m_ObjectHideFlags: 0

@@ -110,6 +110,9 @@ namespace HexaRealm.Progression
             return true;
         }
 
+        /// <summary>Unlocks an absolute cap value. Existing upgrades, stats, and Soul remain unchanged.</summary>
+        public bool UnlockUpgradeCap(int newCap) => IncreaseUpgradeCapTo(newCap);
+
         public UpgradePurchaseResult TryPurchaseUpgrade(PlayerStatType stat)
         {
             if (!IsKnownStat(stat))

@@ -16,6 +16,11 @@ namespace HexaRealm.Boss
         public float Attack => attack;
         public float Defense => defense;
         public float MoveSpeed => moveSpeed;
-        public bool IsValid => maxHealth > 0f && attack >= 0f && defense >= 0f && moveSpeed >= 0f;
+        public bool IsValid => maxHealth > 0f && IsFinite(maxHealth)
+            && attack >= 0f && IsFinite(attack)
+            && defense >= 0f && IsFinite(defense)
+            && moveSpeed >= 0f && IsFinite(moveSpeed);
+
+        private static bool IsFinite(float value) => !float.IsNaN(value) && !float.IsInfinity(value);
     }
 }

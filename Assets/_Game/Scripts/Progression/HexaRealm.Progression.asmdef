@@ -2,6 +2,7 @@
   "name": "HexaRealm.Progression",
   "rootNamespace": "HexaRealm.Progression",
   "references": [
+    "HexaRealm.Combat",
     "HexaRealm.Player",
     "HexaRealm.Interaction",
     "Unity.InputSystem",

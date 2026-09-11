@@ -7,10 +7,9 @@
 **Phase F — Boss / Region Progression**
 
 - Previous milestone: Phase E HumanRealm world foundation complete through Task 19.
-- **Next: Task 20 — Optional Boss Framework.**
-- Then: Task 21 HumanRealm Main Boss + Teleport Stone.
+- **Current: Task 21 — HumanRealm Main Boss + Teleport Stone.**
 
-Current goal: prove HumanRealm's optional-boss framework before main-boss region progression.
+Current goal: prove HumanRealm main-boss region progression using the verified optional-boss framework.
 
 ## Development order
 
@@ -31,8 +30,8 @@ Principles:
 | B — Stats/Combat | 06-08 | stats, health/damage, melee combat + mouse aim | Done |
 | C — Enemy/Soul | 09-12 | enemy data/AI, Soul, Soul Pillar upgrades | Done |
 | D — Equipment/Loot/Farming | 13-16.5 | weapon, armor, chest loot, respawn, cleanup | Done |
-| E — HumanRealm World | 17-19 | graybox, cave transition, village NPC movement | **Current** |
-| F — Boss/Region | 20-21 | optional boss, main boss, Teleport Stone | Planned |
+| E — HumanRealm World | 17-19 | graybox, cave transition, village NPC movement | Done |
+| F — Boss/Region | 20-21 | optional boss, main boss, Teleport Stone | **Current** |
 | G — Persistence | 22 | save/load | Planned |
 | H — Asset Pipeline | 23-25 | art bible, tileset, animation pipeline | Planned |
 | I — HumanRealm Content | 26-38 | production content, audio/UI, balance | Planned |
