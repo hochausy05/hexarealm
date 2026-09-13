@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 03074e0fdf58c2f46abb02bc901b2765, type: 3}
-  m_Name: OptionalBoss_Prototype
-  m_EditorClassIdentifier: Assembly-CSharp::HexaRealm.Boss.BossData
-  displayName: Optional Guardian
-  maxHealth: 250
-  attack: 16
-  defense: 3
-  moveSpeed: 2.6
+  m_Name: MainBoss_HumanRealmData
+  m_EditorClassIdentifier: HexaRealm.Boss::HexaRealm.Boss.BossData
+  displayName: HumanRealm Main Boss
+  maxHealth: 600
+  attack: 24
+  defense: 4
+  moveSpeed: 2.4

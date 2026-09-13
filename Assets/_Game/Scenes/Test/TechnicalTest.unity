@@ -246,17 +246,6 @@ Tilemap:
     e31: 0
     e32: 0
     e33: 1
---- !u!114 &421753203 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: -796832246253504088, guid: 208c2857f38191e46ab65757d0bb9da7, type: 3}
-  m_PrefabInstance: {fileID: 1379960624}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8228d06ebde74f5409cb0ffa5602e904, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: HexaRealm.Boss::HexaRealm.Boss.BossCombatController
 --- !u!114 &421753205 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5770196542321948279, guid: 208c2857f38191e46ab65757d0bb9da7, type: 3}
@@ -268,22 +257,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 274683d8b91bca340879da1cdebfcc99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: HexaRealm.Boss::HexaRealm.Boss.BossHealth
---- !u!114 &421753207 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8597905183717675155, guid: 208c2857f38191e46ab65757d0bb9da7, type: 3}
-  m_PrefabInstance: {fileID: 1379960624}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7dbc31e3dd0c5b948806861effa0d0fd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: HexaRealm.Boss::HexaRealm.Boss.BossRuntime
---- !u!50 &421753209 stripped
-Rigidbody2D:
-  m_CorrespondingSourceObject: {fileID: 8607992310785384773, guid: 208c2857f38191e46ab65757d0bb9da7, type: 3}
-  m_PrefabInstance: {fileID: 1379960624}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &526032797
 GameObject:
   m_ObjectHideFlags: 0
@@ -1213,26 +1186,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: OptionalBoss_HumanRealm
       objectReference: {fileID: 0}
-    - target: {fileID: 944971020477672339, guid: 208c2857f38191e46ab65757d0bb9da7, type: 3}
-      propertyPath: body
-      value: 
-      objectReference: {fileID: 421753209}
-    - target: {fileID: 944971020477672339, guid: 208c2857f38191e46ab65757d0bb9da7, type: 3}
-      propertyPath: combat
-      value: 
-      objectReference: {fileID: 421753203}
-    - target: {fileID: 944971020477672339, guid: 208c2857f38191e46ab65757d0bb9da7, type: 3}
-      propertyPath: runtime
-      value: 
-      objectReference: {fileID: 421753207}
-    - target: {fileID: 944971020477672339, guid: 208c2857f38191e46ab65757d0bb9da7, type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 944971020477672339, guid: 208c2857f38191e46ab65757d0bb9da7, type: 3}
-      propertyPath: bossHealth
-      value: 
-      objectReference: {fileID: 421753205}
     - target: {fileID: 8670627579827240871, guid: 208c2857f38191e46ab65757d0bb9da7, type: 3}
       propertyPath: m_LocalPosition.x
       value: -3.86085

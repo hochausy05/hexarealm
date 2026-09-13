@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e5020000000000000000000000000001, type: 3}
-  m_Name: MainBoss_PrototypeReward
+  m_Name: MainBoss_HumanRealmReward
   m_EditorClassIdentifier: HexaRealm.Loot::HexaRealm.Loot.LootBundleData
   soulAmount: 60
   weaponReward: {fileID: 0}

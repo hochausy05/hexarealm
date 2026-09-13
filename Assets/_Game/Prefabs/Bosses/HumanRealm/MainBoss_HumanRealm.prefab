@@ -19,8 +19,9 @@ GameObject:
   - component: {fileID: 8937777330524718701}
   - component: {fileID: -3029776076183460381}
   - component: {fileID: 5390729096496833935}
+  - component: {fileID: 8062402365119182117}
   m_Layer: 9
-  m_Name: OptionalBoss_HumanRealm
+  m_Name: MainBoss_HumanRealm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -119,7 +120,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7dbc31e3dd0c5b948806861effa0d0fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: HexaRealm.Boss::HexaRealm.Boss.BossRuntime
-  data: {fileID: 11400000, guid: 5d82261f609c70c4c8ba6f8242037074, type: 2}
+  data: {fileID: 11400000, guid: 8ba6e6fab6f618c41802fb953a5d84f9, type: 2}
 --- !u!114 &3143026549995076436
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -242,7 +243,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: HexaRealm.Boss::HexaRealm.Boss.BossReward
   bossHealth: {fileID: 5770196542321948279}
-  reward: {fileID: 11400000, guid: a26296da4425ff241a36b1167617345d, type: 2}
+  reward: {fileID: 11400000, guid: bb0fd18b3bfe5a94db4bca133637bdc9, type: 2}
+--- !u!114 &8062402365119182117
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 600837072929601322}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 844d0d9de6f3fb54e8eccc5c92240889, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HexaRealm.Progression::HexaRealm.Progression.RegionBossProgressionReward
+  bossHealth: {fileID: 3143026549995076436}
+  rewardData: {fileID: 11400000, guid: 6205fd3e2656ea4478c38d812c6435ad, type: 2}
+  playerProgression: {fileID: 0}
+  playerUpgradeProgression: {fileID: 0}
 --- !u!1 &2414815815883105733
 GameObject:
   m_ObjectHideFlags: 0
