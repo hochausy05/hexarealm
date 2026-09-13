@@ -9,6 +9,7 @@ using HexaRealm.Progression;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
+using UnityEngine.UI;
 
 namespace HexaRealm.Tests.EditMode
 {
@@ -71,7 +72,7 @@ namespace HexaRealm.Tests.EditMode
             loot.SetAuthoringValues(5);
             SetPrivateField(reward, "reward", loot);
 
-            LogAssert.Expect(LogType.Error, "BossReward requires a PlayerLootReceiver recipient before it can grant loot.");
+            LogAssert.Expect(LogType.Error, "BossReward: PlayerLootReceiver is missing; reward was not granted.");
             InvokePrivate(reward, "GrantOnce");
 
             Assert.That(reward.Granted, Is.False);
@@ -94,6 +95,7 @@ namespace HexaRealm.Tests.EditMode
             reward.SetRecipient(receiver);
 
             InvokePrivate(reward, "GrantOnce");
+            LogAssert.Expect(LogType.Warning, "BossReward: Reward was already granted; duplicate delivery was ignored.");
             InvokePrivate(reward, "GrantOnce");
 
             Assert.That(reward.Granted, Is.True);
@@ -103,14 +105,22 @@ namespace HexaRealm.Tests.EditMode
         [Test]
         public void BossHealthBar_InvalidSelfRootKeepsHostActive()
         {
+            BossController boss = CreateValidBoss(out _);
             GameObject host = CreateInactiveObject("Boss Health Bar Host");
             BossHealthBarUI ui = host.AddComponent<BossHealthBarUI>();
+            GameObject fillObject = new GameObject("Fill", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
+            fillObject.transform.SetParent(host.transform);
+            Image fill = fillObject.GetComponent<Image>();
+            SetPrivateField(ui, "boss", boss);
+            SetPrivateField(ui, "bossHealth", boss.GetComponent<BossHealth>());
+            SetPrivateField(ui, "fill", fill);
             SetPrivateField(ui, "barRoot", host);
 
             LogAssert.Expect(
                 LogType.Error,
-                "BossHealthBarUI requires a BossController, its BossHealth with Health, an Image fill, and a separate visual barRoot that does not contain the UI host.");
+                "BossHealthBarUI: BarRoot cannot be the same GameObject that contains BossHealthBarUI.");
             host.SetActive(true);
+            InvokePrivate(ui, "ValidateConfiguration");
 
             Assert.That(host.activeSelf, Is.True);
             Assert.That(ui.enabled, Is.False);
@@ -154,6 +164,53 @@ namespace HexaRealm.Tests.EditMode
             Assert.That(boss.CurrentState, Is.EqualTo(BossController.BossState.Returning));
         }
 
+        [Test]
+        public void BossArena_DestroyedBossOnTriggerExit_ClearsTrackingWithoutException()
+        {
+            BossController boss = CreateValidBoss(out _);
+            GameObject player = CreateInactiveObject("Destroyed Boss Exit Player");
+            player.AddComponent<PlayerHealth>();
+            BoxCollider2D playerCollider = CreateChildCollider(player.transform, "Player Collider");
+            player.SetActive(true);
+
+            GameObject arenaObject = CreateInactiveObject("Destroyed Boss Exit Arena");
+            arenaObject.AddComponent<BoxCollider2D>();
+            BossArena arena = arenaObject.AddComponent<BossArena>();
+            SetPrivateField(arena, "boss", boss);
+            arenaObject.SetActive(true);
+            InvokeTrigger(arena, "OnTriggerEnter2D", playerCollider);
+
+            UnityEngine.Object.DestroyImmediate(boss.gameObject);
+
+            Assert.DoesNotThrow(() => InvokeTrigger(arena, "OnTriggerEnter2D", playerCollider));
+            Assert.DoesNotThrow(() => InvokeTrigger(arena, "OnTriggerExit2D", playerCollider));
+            Assert.That(GetPrivateField<PlayerHealth>(arena, "activePlayer"), Is.Null);
+            Assert.That(GetPrivateField<HashSet<Collider2D>>(arena, "playerColliders"), Is.Empty);
+        }
+
+        [Test]
+        public void BossArena_DestroyedBossOnDisable_ClearsTrackingWithoutException()
+        {
+            BossController boss = CreateValidBoss(out _);
+            GameObject player = CreateInactiveObject("Destroyed Boss Disable Player");
+            player.AddComponent<PlayerHealth>();
+            BoxCollider2D playerCollider = CreateChildCollider(player.transform, "Player Collider");
+            player.SetActive(true);
+
+            GameObject arenaObject = CreateInactiveObject("Destroyed Boss Disable Arena");
+            arenaObject.AddComponent<BoxCollider2D>();
+            BossArena arena = arenaObject.AddComponent<BossArena>();
+            SetPrivateField(arena, "boss", boss);
+            arenaObject.SetActive(true);
+            InvokeTrigger(arena, "OnTriggerEnter2D", playerCollider);
+
+            UnityEngine.Object.DestroyImmediate(boss.gameObject);
+
+            Assert.DoesNotThrow(() => InvokePrivate(arena, "OnDisable"));
+            Assert.That(GetPrivateField<PlayerHealth>(arena, "activePlayer"), Is.Null);
+            Assert.That(GetPrivateField<HashSet<Collider2D>>(arena, "playerColliders"), Is.Empty);
+        }
+
         private BossController CreateValidBoss(out BossCombatController combat)
         {
             GameObject root = CreateInactiveObject("Valid Boss Test");
@@ -164,6 +221,10 @@ namespace HexaRealm.Tests.EditMode
             BossData data = ScriptableObject.CreateInstance<BossData>();
             created.Add(data);
             SetPrivateField(root.GetComponent<BossRuntime>(), "data", data);
+            InvokePrivate(root.GetComponent<BossHealth>(), "Awake");
+            InvokePrivate(combat, "ResolveAndValidateReferences");
+            InvokePrivate(controller, "Awake");
+            InvokePrivate(controller, "OnEnable");
             root.SetActive(true);
             return controller;
         }
@@ -202,6 +263,13 @@ namespace HexaRealm.Tests.EditMode
             FieldInfo field = instance.GetType().GetField(name, BindingFlags.Instance | BindingFlags.NonPublic);
             Assert.That(field, Is.Not.Null);
             field.SetValue(instance, value);
+        }
+
+        private static T GetPrivateField<T>(object instance, string name)
+        {
+            FieldInfo field = instance.GetType().GetField(name, BindingFlags.Instance | BindingFlags.NonPublic);
+            Assert.That(field, Is.Not.Null);
+            return (T)field.GetValue(instance);
         }
     }
 }

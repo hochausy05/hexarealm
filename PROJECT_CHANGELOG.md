@@ -1,5 +1,14 @@
 # PROJECT_CHANGELOG — HexaRealm
 
+## 2026-09-13 — Task 20: Hoàn thiện HP UI và reward Boss
+- Tách chẩn đoán reference thiếu/đã bị hủy cho `BossHealthBarUI`, đồng bộ ngay trạng thái hiển thị và bảo vệ host UI khỏi cấu hình `BarRoot` không an toàn.
+- Bảo vệ lifecycle/subscription và giao reward khỏi reference Unity đã bị hủy hoặc gọi lặp; chỉ đặt `Granted` sau khi `PlayerLootReceiver` nhận thành công, kèm test EditMode tập trung.
+
+## 2026-09-13 — Task 23: Art Bible
+- Thêm `docs/ART_BIBLE.md` định nghĩa hệ visual 2D top-down fantasy pixel art cho HumanRealm và các chuẩn palette, scale, outline, ánh sáng, shading, terrain, nhân vật, item, UI, animation, sprite-sheet, naming, folder và QA.
+- Giữ nguyên chuẩn kỹ thuật đã chốt: tile 32×32, PPU 32, Point/No Filter, Compression None và pivot Bottom Center ưu tiên.
+- Ghi rõ palette sản xuất, style target, camera framing, roster và pipeline generation vẫn cần phê duyệt; không tạo asset thật hoặc thay đổi gameplay/architecture.
+
 ## 2026-09-12 — Dọn công cụ Editor authoring cũ
 - Chuyển các builder Task 17/19/20/21 và utility tạo Boss vào `Editor/Legacy`, gỡ toàn bộ menu thực thi để tránh ghi đè scene, prefab hoặc dữ liệu đã hoàn thiện.
 - Xóa hai thư mục script trùng tên số nhiều `Bosses`/`Enemies` vì rỗng; giữ nguyên các thư mục runtime `Boss`/`Enemy`.

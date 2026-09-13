@@ -1,4 +1,6 @@
 using System;
+using System.Text;
+using HexaRealm.Boss.Attacks;
 using HexaRealm.Combat;
 using UnityEngine;
 
@@ -173,11 +175,53 @@ namespace HexaRealm.Boss
 
         private void DisableForInvalidConfiguration()
         {
-            Debug.LogError(
-                "BossController requires Rigidbody2D, BossRuntime with valid BossData, valid BossHealth, and a valid BossCombatController with at least one attack on the same Boss root.",
-                this);
+            if (this == null) return;
+            Debug.LogError(BuildInvalidConfigurationDiagnostic(), this);
             StopMovement();
             enabled = false;
+        }
+
+        private string BuildInvalidConfigurationDiagnostic()
+        {
+            bool bodyOnSameRoot = body != null && body.gameObject == gameObject;
+            bool runtimeOnSameRoot = runtime != null && runtime.gameObject == gameObject;
+            bool runtimeHasValidData = runtime != null && runtime.HasValidData;
+            bool bossHealthExists = bossHealth != null;
+            bool combatExists = combat != null;
+            BossData data = runtime != null ? runtime.Data : null;
+
+            var report = new StringBuilder("BossController invalid configuration:");
+            report.Append("\n  Body exists and is on same root: ").Append(bodyOnSameRoot);
+            report.Append("\n  BossRuntime exists and is on same root: ").Append(runtimeOnSameRoot);
+            report.Append("\n  BossRuntime.HasValidData: ").Append(runtimeHasValidData);
+            report.Append("\n  BossData.MaxHealth: ").Append(data != null ? data.MaxHealth.ToString() : "<null>");
+            report.Append("\n  BossData.Attack: ").Append(data != null ? data.Attack.ToString() : "<null>");
+            report.Append("\n  BossData.Defense: ").Append(data != null ? data.Defense.ToString() : "<null>");
+            report.Append("\n  BossData.MoveSpeed: ").Append(data != null ? data.MoveSpeed.ToString() : "<null>");
+            report.Append("\n  BossHealth exists: ").Append(bossHealthExists);
+            report.Append("\n  BossHealth enabled: ").Append(bossHealthExists && bossHealth.enabled);
+            report.Append("\n  BossHealth.HasResolvedReferences: ").Append(bossHealthExists && bossHealth.HasResolvedReferences);
+            report.Append("\n  BossCombatController exists: ").Append(combatExists);
+            report.Append("\n  BossCombatController enabled: ").Append(combatExists && combat.enabled);
+            report.Append("\n  BossCombatController.HasResolvedReferences: ").Append(combatExists && combat.HasResolvedReferences);
+            report.Append("\n  BossCombatController.AttackCount: ").Append(combatExists ? combat.AttackCount : 0);
+
+            if (combat != null && combat.ConfiguredAttacks != null)
+            {
+                for (int index = 0; index < combat.ConfiguredAttacks.Count; index++)
+                {
+                    BossAttackBase attack = combat.ConfiguredAttacks[index];
+                    bool attackExists = attack != null;
+                    report.Append("\n  Attack[").Append(index).Append("]:");
+                    report.Append(" type/name=").Append(attackExists ? attack.GetType().Name + "/" + attack.name : "<null>");
+                    report.Append(", null=").Append(!attackExists);
+                    report.Append(", enabled=").Append(attackExists && attack.enabled);
+                    report.Append(", same root=").Append(attackExists && attack.gameObject == gameObject);
+                    report.Append(", HasValidRuntime=").Append(attackExists && attack.HasValidRuntime);
+                }
+            }
+
+            return report.ToString();
         }
     }
 }

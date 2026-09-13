@@ -14,8 +14,12 @@ GameObject:
   - component: {fileID: 8597905183717675155}
   - component: {fileID: 3143026549995076436}
   - component: {fileID: 5770196542321948279}
+  - component: {fileID: 944971020477672339}
+  - component: {fileID: -796832246253504088}
+  - component: {fileID: 8937777330524718701}
+  - component: {fileID: -3029776076183460381}
   m_Layer: 9
-  m_Name: BossDamageTest
+  m_Name: OptionalBoss_HumanRealm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -30,7 +34,7 @@ Transform:
   m_GameObject: {fileID: 600837072929601322}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 4, y: 1, z: 1}
+  m_LocalPosition: {x: 4, y: 1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -51,7 +55,7 @@ Rigidbody2D:
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 1
-  m_LinearDamping: 0
+  m_LinearDamping: 8
   m_AngularDamping: 0.05
   m_GravityScale: 0
   m_Material: {fileID: 0}
@@ -64,7 +68,7 @@ Rigidbody2D:
   m_Interpolate: 1
   m_SleepingMode: 1
   m_CollisionDetection: 1
-  m_Constraints: 7
+  m_Constraints: 4
 --- !u!70 &1380620646121592172
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -114,7 +118,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7dbc31e3dd0c5b948806861effa0d0fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: HexaRealm.Boss::HexaRealm.Boss.BossRuntime
-  data: {fileID: 11400000, guid: 73b1ac3d55c158d4889fcd0890e0587a, type: 2}
+  data: {fileID: 11400000, guid: 5d82261f609c70c4c8ba6f8242037074, type: 2}
 --- !u!114 &3143026549995076436
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -143,6 +147,87 @@ MonoBehaviour:
   m_EditorClassIdentifier: HexaRealm.Boss::HexaRealm.Boss.BossHealth
   bossRuntime: {fileID: 8597905183717675155}
   health: {fileID: 3143026549995076436}
+--- !u!114 &944971020477672339
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 600837072929601322}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c2c8292cfc66ff4398ea1bbfc8beea4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HexaRealm.Boss::HexaRealm.Boss.BossController
+  body: {fileID: 0}
+  runtime: {fileID: 0}
+  bossHealth: {fileID: 0}
+  combat: {fileID: 0}
+  homeStopDistance: 0.1
+--- !u!114 &-796832246253504088
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 600837072929601322}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8228d06ebde74f5409cb0ffa5602e904, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HexaRealm.Boss::HexaRealm.Boss.BossCombatController
+  boss: {fileID: 944971020477672339}
+  attacks:
+  - {fileID: 8937777330524718701}
+  - {fileID: -3029776076183460381}
+--- !u!114 &8937777330524718701
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 600837072929601322}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cdc3a9b408b1ba6419edb3f938edd3c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HexaRealm.Boss::HexaRealm.Boss.Attacks.BossMeleeAttack
+  telegraphDuration: 0.45
+  activeDuration: 0.15
+  recoveryDuration: 0.45
+  cooldown: 1.2
+  damageMultiplier: 1
+  telegraph: {fileID: 0}
+  range: 1.45
+  hitSize: {x: 2.2, y: 1.35}
+  targetLayerMask:
+    serializedVersion: 2
+    m_Bits: 256
+--- !u!114 &-3029776076183460381
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 600837072929601322}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d01faec54bdfde042a714f3064b7084c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HexaRealm.Boss::HexaRealm.Boss.Attacks.BossChargeAttack
+  telegraphDuration: 0.45
+  activeDuration: 0.15
+  recoveryDuration: 0.45
+  cooldown: 1.2
+  damageMultiplier: 1
+  telegraph: {fileID: 0}
+  minimumRange: 2
+  maximumRange: 6
+  chargeSpeed: 7
+  hitRadius: 0.7
+  targetLayerMask:
+    serializedVersion: 2
+    m_Bits: 256
 --- !u!1 &2414815815883105733
 GameObject:
   m_ObjectHideFlags: 0

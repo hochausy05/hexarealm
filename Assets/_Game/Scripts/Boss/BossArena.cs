@@ -27,6 +27,12 @@ namespace HexaRealm.Boss
 
         private void OnTriggerEnter2D(Collider2D other)
         {
+            if (boss == null)
+            {
+                ClearPlayerTracking();
+                return;
+            }
+
             PlayerHealth playerHealth = other.GetComponentInParent<PlayerHealth>();
             if (playerHealth == null) return;
             if (activePlayer == null && playerColliders.Count > 0) playerColliders.Clear();
@@ -42,9 +48,31 @@ namespace HexaRealm.Boss
 
         private void OnTriggerExit2D(Collider2D other)
         {
+            if (boss == null)
+            {
+                ClearPlayerTracking();
+                return;
+            }
+
             if (!playerColliders.Remove(other) || playerColliders.Count > 0) return;
             activePlayer = null;
             boss.Disengage();
+        }
+
+        private void OnDisable()
+        {
+            ClearPlayerTracking();
+        }
+
+        private void OnDestroy()
+        {
+            ClearPlayerTracking();
+        }
+
+        private void ClearPlayerTracking()
+        {
+            playerColliders.Clear();
+            activePlayer = null;
         }
     }
 }

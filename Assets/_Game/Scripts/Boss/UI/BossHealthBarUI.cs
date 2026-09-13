@@ -11,86 +11,145 @@ namespace HexaRealm.Boss.UI
         [SerializeField] private Image fill;
         [SerializeField] private GameObject barRoot;
 
+        private BossController subscribedBoss;
+        private Health subscribedHealth;
         private bool configurationErrorLogged;
 
         private void Awake()
         {
-            if (!ResolveAndValidateReferences()) return;
+            if (!ValidateConfiguration()) return;
             Hide();
         }
 
         private void OnEnable()
         {
-            if (!ResolveAndValidateReferences()) return;
+            if (!ValidateConfiguration()) return;
 
-            boss.Engaged += Show;
-            boss.Disengaged += Hide;
-            boss.ResetToDormant += Hide;
-            boss.Died += Hide;
-            bossHealth.Health.HealthChanged += UpdateFill;
+            subscribedBoss = boss;
+            subscribedHealth = bossHealth.Health;
+            subscribedBoss.Engaged += Show;
+            subscribedBoss.Disengaged += Hide;
+            subscribedBoss.ResetToDormant += Hide;
+            subscribedBoss.Died += Hide;
+            subscribedHealth.HealthChanged += UpdateFill;
+
+            SynchronizeWithBossState();
         }
 
         private void OnDisable()
         {
-            if (boss != null)
+            Unsubscribe();
+        }
+
+        private void OnDestroy()
+        {
+            Unsubscribe();
+        }
+
+        private void SynchronizeWithBossState()
+        {
+            if (boss == null) return;
+
+            if (boss.CurrentState == BossController.BossState.Engaged
+                || boss.CurrentState == BossController.BossState.Attacking)
             {
-                boss.Engaged -= Show;
-                boss.Disengaged -= Hide;
-                boss.ResetToDormant -= Hide;
-                boss.Died -= Hide;
+                Show();
+                return;
             }
 
-            if (bossHealth != null && bossHealth.Health != null) bossHealth.Health.HealthChanged -= UpdateFill;
+            Hide();
         }
 
         private void Show()
         {
+            if (!ValidateLiveVisualReferences()) return;
+
             UpdateFill(0f, bossHealth.Health.CurrentHealth);
             barRoot.SetActive(true);
         }
 
         private void Hide()
         {
-            if (barRoot != null) barRoot.SetActive(false);
+            if (!ValidateLiveVisualReferences()) return;
+            barRoot.SetActive(false);
         }
 
         private void UpdateFill(float _, float currentValue)
         {
-            if (fill == null || bossHealth == null || bossHealth.Health == null) return;
-            fill.fillAmount = bossHealth.Health.MaxHealth <= 0f
+            if (!ValidateLiveVisualReferences()) return;
+
+            Health health = bossHealth.Health;
+            fill.fillAmount = health.MaxHealth <= 0f
                 ? 0f
-                : Mathf.Clamp01(currentValue / bossHealth.Health.MaxHealth);
+                : Mathf.Clamp01(currentValue / health.MaxHealth);
         }
 
-        private void ResolveReferences()
+        private bool ValidateConfiguration()
         {
-            if (boss == null && bossHealth != null) boss = bossHealth.GetComponent<BossController>();
-            if (bossHealth == null && boss != null) bossHealth = boss.GetComponent<BossHealth>();
-        }
+            string error = GetConfigurationError();
+            if (error == null) return true;
 
-        private bool HasValidConfiguration()
-        {
-            bool barRootKeepsHostActive = barRoot != null && barRoot != gameObject
-                && !transform.IsChildOf(barRoot.transform);
-            return boss != null && bossHealth != null && bossHealth.gameObject == boss.gameObject
-                && bossHealth.Health != null && fill != null && barRootKeepsHostActive;
-        }
-
-        private bool ResolveAndValidateReferences()
-        {
-            ResolveReferences();
-            if (HasValidConfiguration()) return true;
-
-            if (!configurationErrorLogged)
-            {
-                configurationErrorLogged = true;
-                Debug.LogError(
-                    "BossHealthBarUI requires a BossController, its BossHealth with Health, an Image fill, and a separate visual barRoot that does not contain the UI host.",
-                    this);
-            }
-
+            LogConfigurationError(error);
             enabled = false;
             return false;
+        }
+
+        private bool ValidateLiveVisualReferences()
+        {
+            string error = GetConfigurationError();
+            if (error == null) return true;
+
+            LogConfigurationError(error);
+            enabled = false;
+            return false;
+        }
+
+        private string GetConfigurationError()
+        {
+            if (ReferenceEquals(boss, null)) return "BossHealthBarUI: Boss is missing.";
+            if (boss == null) return "BossHealthBarUI: Boss has been destroyed.";
+            if (ReferenceEquals(bossHealth, null)) return "BossHealthBarUI: Boss Health is missing.";
+            if (bossHealth == null) return "BossHealthBarUI: Boss Health has been destroyed.";
+            if (bossHealth.gameObject != boss.gameObject)
+                return "BossHealthBarUI: Boss and Boss Health must reference components on the same Boss GameObject.";
+
+            Health health = bossHealth.Health;
+            if (ReferenceEquals(health, null)) return "BossHealthBarUI: Boss Health's Health reference is missing.";
+            if (health == null) return "BossHealthBarUI: Boss Health's Health reference has been destroyed.";
+            if (ReferenceEquals(fill, null)) return "BossHealthBarUI: Fill Image is missing.";
+            if (fill == null) return "BossHealthBarUI: Fill Image has been destroyed.";
+            if (ReferenceEquals(barRoot, null)) return "BossHealthBarUI: BarRoot is missing.";
+            if (barRoot == null) return "BossHealthBarUI: BarRoot has been destroyed.";
+            if (barRoot == gameObject)
+                return "BossHealthBarUI: BarRoot cannot be the same GameObject that contains BossHealthBarUI.";
+            if (transform.IsChildOf(barRoot.transform))
+                return "BossHealthBarUI: BarRoot cannot be a parent of the GameObject that contains BossHealthBarUI.";
+            if (!fill.transform.IsChildOf(barRoot.transform))
+                return "BossHealthBarUI: Fill Image must be a child of BarRoot so the whole HP visual hides together.";
+
+            return null;
+        }
+
+        private void LogConfigurationError(string message)
+        {
+            if (configurationErrorLogged) return;
+            configurationErrorLogged = true;
+            Debug.LogError(message, this);
+        }
+
+        private void Unsubscribe()
+        {
+            if (subscribedBoss != null)
+            {
+                subscribedBoss.Engaged -= Show;
+                subscribedBoss.Disengaged -= Hide;
+                subscribedBoss.ResetToDormant -= Hide;
+                subscribedBoss.Died -= Hide;
+            }
+
+            if (subscribedHealth != null) subscribedHealth.HealthChanged -= UpdateFill;
+            subscribedBoss = null;
+            subscribedHealth = null;
         }
     }
 }

@@ -15,6 +15,7 @@ namespace HexaRealm.Boss
 
         public bool IsAttackRunning => activeAttack != null && activeAttack.IsRunning;
         public int AttackCount => attacks != null ? attacks.Count : 0;
+        internal IReadOnlyList<BossAttackBase> ConfiguredAttacks => attacks;
         public bool HasResolvedReferences
         {
             get

@@ -57,7 +57,7 @@
 
 ## Asset pipeline
 
-- [ ] T23 — Art Bible
+- [x] T23 — Art Bible
 - [ ] T24 — HumanRealm Tileset
 - [ ] T25 — Character / Enemy Animation Pipeline
 
