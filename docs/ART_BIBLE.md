@@ -11,15 +11,32 @@
 
 ### Priority order
 
-When generating or modifying visual assets, apply rules in this order:
+Use source priority by domain instead of one global override chain.
 
-1. `GAME_DESIGN_CORE.md`
-2. This `ART_BIBLE.md`
-3. Existing approved production assets
-4. Task-specific instructions
+**Gameplay / lore / progression intent**
+
+1. Current local gameplay/code state
+2. `GAME_DESIGN_CORE.md`
+3. Task-specific instructions
+4. This `ART_BIBLE.md`
 5. AI inference
 
-If two rules conflict, follow the higher-priority source and report the conflict.
+**Visual production**
+
+1. This `ART_BIBLE.md`
+2. Existing `APPROVED` production assets / approved visual references
+3. Task-specific instructions that do not contradict locked project rules
+4. `GAME_DESIGN_CORE.md` visual intent
+5. AI inference
+
+**Unity technical reality**
+
+1. Current local Unity/project state
+2. Current project documentation
+3. Historical documentation / legacy assets
+
+If two sources conflict, follow the higher-priority source for that domain and report the conflict.
+AI MUST NOT use a broad lore/gameplay statement to override a more specific locked visual-production rule unless the task explicitly requires a design revision.
 
 ### Requirement keywords
 
@@ -189,6 +206,42 @@ Reason:
 
 A different pivot MAY be used only when the asset requires it and the reason is documented.
 
+## 3.4 Production scale reference — HumanRealm v1
+
+The base world unit is:
+
+```text
+1 tile = 32x32 px = 1 Unity world unit at PPU 32
+```
+
+`Player = 1.0x` is the primary visual-mass reference for characters and enemies.
+This is a visual scale guide, NOT a collider or balance specification.
+
+| Asset class | HumanRealm v1 visual scale guideline |
+|---|---|
+| Player | `1.0x` reference; body SHOULD occupy roughly `65–80%` of its frame height |
+| Normal NPC | `0.90–1.10x` Player |
+| Small Rank F enemy | `0.45–0.80x` Player visual mass |
+| Medium / Rank E enemy | `0.80–1.20x` Player |
+| Elite enemy | `1.10–1.60x` Player |
+| Optional Boss | `1.50–2.25x` Player |
+| Main Boss | `2.00–3.00x` Player |
+| Common chest | roughly `0.75–1.25` tiles wide |
+| Common rock | roughly `0.5–1.5` tile footprint |
+| Common tree trunk/base | roughly `0.5–1.0` tile footprint |
+| Common tree canopy | roughly `2–3` tiles wide when the design allows |
+
+Scale rules:
+
+- Canvas size and subject size are NOT the same thing.
+- An asset MUST NOT fill its entire canvas merely because more pixels are available.
+- Related animation frames MUST preserve the same subject scale.
+- Armor MUST NOT change Player height/footprint materially.
+- Doors, gates, bridges, paths, and interaction props MUST look usable at Player scale.
+- Boss identity MUST come from silhouette/detail/animation as well as scale.
+- Values outside these guidelines MAY be used only for a deliberate design reason and SHOULD be documented in the asset contract.
+- When an `APPROVED` Player/reference sheet exists, match that reference before relying on numeric ranges.
+
 ---
 
 # 4. CAMERA, ORIENTATION, AND SORTING
@@ -211,7 +264,39 @@ Do NOT introduce:
 
 unless explicitly approved.
 
-## 4.2 Character facing
+## 4.2 Production perspective lock — HumanRealm v1
+
+Until an `APPROVED` visual reference sheet exists, the following textual perspective lock is binding for generated `CANDIDATE` assets:
+
+```yaml
+projection: Orthographic
+horizon: None
+vanishing_points: None
+ground_plane: Flat top-down gameplay plane
+isometric_diamond_grid: Forbidden
+perspective_convergence: Forbidden
+top_surfaces: Primary
+front_vertical_surfaces: Secondary and controlled
+side_surfaces: Minimal unless required for readability
+```
+
+Production interpretation:
+
+- Terrain MUST read as a flat top-down plane.
+- Characters MUST read as top-down game sprites, NOT platformer/side-view characters.
+- Props/buildings MAY expose a controlled front vertical face to communicate height, but the visible-face ratio MUST stay consistent within the same asset family.
+- Roofs, tree canopies, rocks, chests, and large props MUST use the same projection logic.
+- No asset may introduce horizon perspective or converging lines.
+- No asset may use a `45° isometric` diamond-axis construction.
+- A standalone asset whose viewing angle does not match approved HumanRealm assets MUST be rejected even if attractive in isolation.
+
+Reference-sheet policy:
+
+- `final_style_reference_sheet` remains an OPEN deliverable.
+- Until it exists, these textual perspective rules are the source of truth.
+- Once an `APPROVED` reference sheet exists, AI MUST match its visible-surface ratio and silhouette treatment while preserving the orthographic/no-isometric rules above.
+
+## 4.3 Character facing
 
 Player and character art SHOULD support the existing 8-direction gameplay where required.
 
@@ -222,7 +307,7 @@ All facings MUST preserve:
 - costume proportions;
 - lighting logic.
 
-## 4.3 Y-sorting
+## 4.4 Y-sorting
 
 Assets MUST support top-down Y-based sorting.
 
@@ -285,7 +370,12 @@ Danger MUST NOT rely only on increasing sprite size.
 
 # 6. HUMANREALM PALETTE
 
-Status: **BASELINE — NOT FINAL**
+Status: **LOCKED FOR HUMANREALM VERTICAL SLICE v1**
+
+This palette is the production baseline for HumanRealm from T24 onward until an explicit approved revision.
+It is NOT a permanent palette for all six regions.
+AI MUST NOT silently replace the anchor colors or redefine their semantic roles.
+Small nearby variations MAY be introduced for material readability when they remain compatible with the anchor family.
 
 The following colors define intended color roles for HumanRealm.
 
@@ -322,7 +412,9 @@ Avoid:
 - unnecessary color proliferation;
 - highlights that compete with interaction or danger cues.
 
-The production palette remains OPEN until formally approved.
+For the current HumanRealm vertical slice, the palette above is considered approved as **HumanRealm Palette v1**.
+Future palette refinement requires an explicit revision rather than silent per-asset color drift.
+A future global/cross-region palette system remains OPEN.
 
 ---
 
@@ -1123,6 +1215,100 @@ OPEN
 
 instead of silently inventing a permanent project standard.
 
+## 24.1 AI production pipeline — HumanRealm v1
+
+The default production pipeline is now LOCKED for the HumanRealm vertical slice:
+
+```text
+ART_BIBLE
+→ Task-specific Asset Contract
+→ Reuse APPROVED visual references when available
+→ Generate ONE base CANDIDATE
+→ Perspective / silhouette / scale / palette review
+→ Pixel cleanup and transparency cleanup
+→ Native-scale review
+→ Unity import + slicing/pivot/import validation
+→ Real HumanRealm context test
+→ CANDIDATE approval decision
+→ Mark APPROVED only after checklist passes
+→ Expand into variants / directions / animation family
+```
+
+### Candidate-first rule
+
+AI MUST NOT begin large batch production before a base candidate is approved.
+
+For character/enemy animation families:
+
+```text
+1. Create one canonical idle/base frame.
+2. Validate scale, anatomy, silhouette, palette, lighting, and pivot.
+3. Approve the base frame.
+4. Create required facing reference frames.
+5. Validate facing consistency.
+6. Only then generate full animation sequences.
+```
+
+Do NOT generate an entire `8-direction × many-frame` sheet as the first production attempt unless an approved family reference already exists.
+
+For terrain families:
+
+```text
+1. Create base tile.
+2. Create one representative edge.
+3. Create one representative corner/transition.
+4. Run 3x3 tiling and seam test.
+5. Approve the visual language.
+6. Expand to the full tile family.
+```
+
+For props/environment families:
+
+```text
+1. Approve one family anchor asset.
+2. Reuse its perspective, outline, palette, material rendering, and detail density.
+3. Generate variants only after the anchor is accepted.
+```
+
+### Reference policy
+
+- Only `APPROVED` assets are authoritative style references.
+- `CANDIDATE` assets MAY be compared, but MUST NOT silently become new style anchors.
+- If no approved reference exists, generated output remains `CANDIDATE` and MUST follow the textual rules in this document.
+- AI SHOULD state which approved references were used.
+
+## 24.2 AI image-generation hard constraints
+
+For standalone sprites unless a task explicitly says otherwise:
+
+- background MUST be transparent;
+- no baked terrain patch or floor circle;
+- no text, watermark, logo, labels, UI frame, or presentation border;
+- no soft anti-aliased halo around alpha edges;
+- no drop shadow baked outside the intended sprite unless the asset contract requires it;
+- no perspective background or scenery;
+- subject MUST fit fully inside the requested canvas with deliberate padding;
+- one asset per canvas unless the task explicitly requests a sprite sheet/contact sheet;
+- do not upscale/downscale with smooth interpolation;
+- do not invent extra accessories that change gameplay identity;
+- do not clip weapon tips, ears, wings, horns, canopy edges, or other silhouette-critical features;
+- keep palette, outline, key light, and pixel cluster logic compatible with HumanRealm v1.
+
+For animation/sprite-sheet generation:
+
+- every cell MUST use identical dimensions;
+- subject baseline and scale MUST remain fixed;
+- background MUST remain transparent;
+- no labels may be baked into production cells;
+- frame order MUST match the declared manifest/contract;
+- spacing/padding MUST be documented when present.
+
+For tilesets:
+
+- tile edges MUST be designed for exact integer-grid reuse;
+- decorative elements MUST NOT accidentally cross tile boundaries unless intentionally part of the tile system;
+- standalone preview backgrounds MUST NOT be baked into production tile textures.
+
 ---
 
 # 25. ASSET APPROVAL CHECKLIST
@@ -1224,7 +1410,9 @@ The following are NOT final.
 AI MUST NOT convert them into permanent rules without approval.
 
 ```yaml
-official_production_palette: OPEN
+humanrealm_palette_v1: LOCKED_FOR_VERTICAL_SLICE
+humanrealm_production_generation_pipeline_v1: LOCKED
+global_cross_region_palette: OPEN
 final_style_reference_sheet: OPEN
 final_native_viewport: OPEN
 final_camera_framing: OPEN
@@ -1233,7 +1421,6 @@ full_humanrealm_enemy_roster: OPEN
 humanrealm_optional_boss_visuals: OPEN
 humanrealm_main_boss_visuals: OPEN
 exact_animation_frame_counts: OPEN
-production_generation_pipeline: OPEN
 asset_manifest_format: OPEN
 external_asset_license_policy: OPEN
 ```
@@ -1249,12 +1436,14 @@ PROJECT: HexaRealm
 REGION: HumanRealm
 STYLE: 2D top-down fantasy pixel art
 CAMERA: Orthographic
+PERSPECTIVE_LOCK: Top-down, no horizon, no vanishing points, no isometric diamond grid
 BASE_TILE: 32x32
 PPU: 32
 FILTER: Point
 COMPRESSION: None
 CHARACTER_PIVOT: Bottom Center
 KEY_LIGHT: Top-left
+SCALE_ANCHOR: Player = 1.0x visual mass
 PLAYER_FRAME: 48x48 or 64x64
 SMALL_ENEMY: 32x32
 MEDIUM_ENEMY: 48x48
@@ -1269,6 +1458,8 @@ HUMANREALM_ENEMY_PRIORITY:
   - F
   - E
 TERRAIN_DEFAULT: Grass
+HUMANREALM_PALETTE_STATUS: Locked v1 for current vertical slice
+AI_PIPELINE: Candidate-first, approve anchor before batch/family generation
 PRIMARY_ACCENTS:
   interaction_reward: Warm Gold
   danger: Red
@@ -1279,14 +1470,15 @@ PRODUCTION_ROOT: Assets/_Game/
 Before creating or modifying any production asset:
 
 ```text
-1. Read GAME_DESIGN_CORE.md.
-2. Read ART_BIBLE.md.
-3. Identify asset type and required contract.
-4. Reuse approved references.
-5. Create or modify asset.
-6. Validate at native scale.
-7. Validate in Unity context.
-8. Run approval checklist.
-9. Mark approval state.
-10. Report any OPEN decision or conflict.
+1. Read ART_BIBLE.md for visual production rules.
+2. Read only relevant GAME_DESIGN_CORE.md sections for gameplay/lore intent.
+3. Define the task-specific Asset Generation Contract.
+4. Reuse APPROVED references when available.
+5. Create ONE base CANDIDATE before batch generation.
+6. Validate perspective, scale, silhouette, palette, and pixel quality.
+7. Clean alpha/background and validate at native scale.
+8. Import/test in real Unity/HumanRealm context.
+9. Run the approval checklist.
+10. Mark approval state and report OPEN decisions/conflicts.
+11. Expand to variants/animation family only after the anchor candidate is approved.
 ```

@@ -1,5 +1,9 @@
 # PROJECT_CHANGELOG — HexaRealm
 
+## 2026-09-14 — Task 23: Hoàn tất Art Bible
+- Hoàn thiện Art Bible cho vertical slice HumanRealm: khóa chuẩn visual/pixel/perspective/scale/palette cùng contract cho Player, enemy/boss và environment.
+- Định nghĩa contract tạo asset bằng AI và pipeline review/phê duyệt; Task 23 hoàn tất, Task 24 có thể bắt đầu.
+
 ## 2026-09-14 — Task 22.3: Lưu trạng thái thế giới
 - Lưu trạng thái đã mở của ba LootChest HumanRealm bằng ID ổn định, kiểm tra ID rỗng/trùng và phục hồi visual/interact mà không phát lại loot.
 - Thêm autosave bảo thủ sau chest thành công và sau giao dịch Main Boss/Region hoàn tất, có chặn reentrancy; trạng thái Main Boss sau load được dẫn xuất từ Region completion thay vì lưu cờ trùng.

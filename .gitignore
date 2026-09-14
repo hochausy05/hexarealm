@@ -30,3 +30,7 @@ Recordings/
 .DS_Store
 Thumbs.db
 desktop.ini
+
+# Local AI / agent files
+.agents/
+skills-lock.json

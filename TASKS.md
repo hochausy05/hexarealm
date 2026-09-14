@@ -4,12 +4,12 @@
 
 ## CURRENT WORK — AI READ THIS FIRST
 
-### [x] TASK 22 — Save System
+### [x] TASK 23 — Art Bible
 
-- **T22.1 complete:** versioned JSON kernel, safe replacement, backup recovery, and runtime bootstrap.
-- **T22.2 complete:** Soul, five upgrades, Upgrade Cap, equipment ownership/equipping, Regions, and Teleport Stones.
-- **T22.3 complete:** stable LootChest IDs/opened state, conservative transaction-safe autosave, derived completed-region Main Boss suppression, and end-to-end hardening.
-- **Next implementation milestone:** T24 HumanRealm Tileset; T23 Art Bible is already complete.
+- **T23 complete:** visual identity, HumanRealm direction, pixel technical standards, perspective/camera rules, scale guidance, palette, lighting/shading/outline, Player/equipment contracts, enemy/boss contracts, terrain/environment rules, animation/sprite-sheet standards, naming/folder standards, AI asset-generation contract, approval states/checklist, and candidate-first production pipeline.
+- **Intentional OPEN decisions:** future-region palettes, final style reference/camera framing, exact animation frame counts, full HumanRealm roster, boss visuals, and other future production refinements remain open and do not block T23.
+- **Previous milestone:** T22 Save System is complete.
+- **Next implementation milestone:** T24 HumanRealm Tileset.
 
 ## Status legend
 

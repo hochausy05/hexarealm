@@ -8,8 +8,8 @@
 - Genre: 2D top-down fantasy action RPG
 - Current region: HumanRealm
 - Current milestone: core player/combat/progression/equipment/loot/farming foundations are implemented
-- Latest completed task: Task 22 — Save System
-- **Next implementation milestone: Task 24 — HumanRealm Tileset (Task 23 Art Bible is already complete)**
+- Latest completed task: Task 23 — Art Bible (Task 22 Save System is complete)
+- **Next implementation milestone: Task 24 — HumanRealm Tileset**
 
 ## Core loop
 
@@ -29,6 +29,7 @@ Use progressive disclosure. **Do not read every document in full by default.**
 | Need roadmap/dependency context | `PLAN.md` -> current phase only |
 | Need recent implementation history | `PROJECT_CHANGELOG.md` -> latest 1-3 relevant entries only |
 | Need Save/Load architecture | `docs/SAVE_SYSTEM.md` |
+| Need visual production rules | `docs/ART_BIBLE.md` |
 | Need implementation details | Only the directly related scripts/assets/prefabs/scenes |
 
 Never read the full changelog, full design document, or entire `Assets/` tree unless the task explicitly requires it.
@@ -39,6 +40,7 @@ Never read the full changelog, full design document, or entire `Assets/` tree un
 - `GAME_DESIGN_CORE.md` — design source of truth.
 - `PLAN.md` — compact development roadmap and phase dependencies.
 - `TASKS.md` — checkbox task tracker; `CURRENT WORK` is authoritative for the next task.
+- `docs/ART_BIBLE.md` — visual-production source of truth for HumanRealm and AI-assisted asset generation.
 - `PROJECT_CHANGELOG.md` — Vietnamese implementation log only.
 
 ## Project paths

@@ -6,10 +6,10 @@
 
 **Phase H — Asset Pipeline**
 
-- Previous milestone: Phase G Persistence complete through Task 22.
+- Previous milestones: Task 22 Save System complete; Task 23 Art Bible complete.
 - **Current transition: Phase H Asset Pipeline; Task 23 Art Bible is complete and Task 24 HumanRealm Tileset is next.**
 
-Current goal: apply the approved Art Bible to the HumanRealm production tileset without reopening the completed Save architecture.
+Current goal: apply the finalized Art Bible to the HumanRealm production tileset without reopening the completed Save architecture.
 
 ## Development order
 
