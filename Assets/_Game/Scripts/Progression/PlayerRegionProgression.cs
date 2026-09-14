@@ -12,6 +12,8 @@ namespace HexaRealm.Progression
 
         public event Action<RegionId> RegionProgressionGranted;
 
+        public IReadOnlyList<RegionId> CompletedRegions => completedRegions;
+        public IReadOnlyList<RegionId> TeleportStoneRegions => teleportStoneRegions;
         public int TeleportStoneCount => teleportStoneRegions.Count;
         public bool IsRegionCompleted(RegionId region) => completedRegions.Contains(region);
         public bool HasTeleportStone(RegionId region) => teleportStoneRegions.Contains(region);
@@ -40,6 +42,27 @@ namespace HexaRealm.Progression
 
             if (changed) RegionProgressionGranted?.Invoke(completedRegion);
             return changed;
+        }
+
+        /// <summary>Replaces persistent region state without replaying milestone reward events.</summary>
+        public void RestoreState(IEnumerable<RegionId> completed, IEnumerable<RegionId> teleportStones)
+        {
+            ReplaceWithUniqueValidRegions(completedRegions, completed);
+            ReplaceWithUniqueValidRegions(teleportStoneRegions, teleportStones);
+        }
+
+        private static void ReplaceWithUniqueValidRegions(List<RegionId> destination, IEnumerable<RegionId> source)
+        {
+            destination.Clear();
+            if (source == null) return;
+
+            foreach (RegionId region in source)
+            {
+                if (Enum.IsDefined(typeof(RegionId), region) && !destination.Contains(region))
+                {
+                    destination.Add(region);
+                }
+            }
         }
     }
 }

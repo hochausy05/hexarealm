@@ -1,5 +1,20 @@
 # PROJECT_CHANGELOG — HexaRealm
 
+## 2026-09-14 — Task 22.3: Lưu trạng thái thế giới
+- Lưu trạng thái đã mở của ba LootChest HumanRealm bằng ID ổn định, kiểm tra ID rỗng/trùng và phục hồi visual/interact mà không phát lại loot.
+- Thêm autosave bảo thủ sau chest thành công và sau giao dịch Main Boss/Region hoàn tất, có chặn reentrancy; trạng thái Main Boss sau load được dẫn xuất từ Region completion thay vì lưu cờ trùng.
+- Giữ schema phiên bản 1 tương thích save T22.2, bổ sung test world/end-to-end và hoàn tất Task 22; CurrentHealth, vị trí, Boss HP và trạng thái combat vẫn không được lưu.
+
+## 2026-09-14 — Task 22.2: Lưu tiến trình Player
+- Tích hợp capture/restore trực tiếp cho Soul, năm chỉ số nâng cấp, Upgrade Cap, Region/Teleport Stone và equipment sở hữu/đang trang bị; load lặp không cộng dồn hoặc phát lại reward.
+- Thêm ID ổn định cho bốn equipment hiện có và `EquipmentCatalog` runtime trong Resources, có kiểm tra ID rỗng/trùng và cảnh báo ID save không còn tồn tại.
+- Tách `HexaRealm.SaveIntegration` khỏi kernel, phục hồi theo thứ tự xác định rồi đưa Player về đầy HP theo MaxHealth mới; thêm phím debug F5/F9 chỉ cho Editor/Development Build và test tích hợp tập trung.
+
+## 2026-09-14 — Task 22.1: Nền tảng Save/Load
+- Thêm schema JSON phiên bản 1, dịch vụ file một slot tại `persistentDataPath` và runtime bootstrap duy nhất không phụ thuộc scene/prefab.
+- Ghi qua file tạm cùng thư mục, thay thế an toàn kèm backup; load có thể phục hồi backup khi file chính hỏng và từ chối schema mới hơn.
+- Thêm EditMode tests cho serialize/version, ghi lần đầu/lần hai, corruption recovery, delete đúng phạm vi và đường dẫn test tách khỏi `Assets`; tích hợp gameplay dành cho T22.2.
+
 ## 2026-09-13 — Task 20: Hoàn thiện HP UI và reward Boss
 - Tách chẩn đoán reference thiếu/đã bị hủy cho `BossHealthBarUI`, đồng bộ ngay trạng thái hiển thị và bảo vệ host UI khỏi cấu hình `BarRoot` không an toàn.
 - Bảo vệ lifecycle/subscription và giao reward khỏi reference Unity đã bị hủy hoặc gọi lặp; chỉ đặt `Granted` sau khi `PlayerLootReceiver` nhận thành công, kèm test EditMode tập trung.

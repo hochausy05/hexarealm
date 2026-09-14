@@ -4,14 +4,12 @@
 
 ## CURRENT WORK — AI READ THIS FIRST
 
-### [~] TASK 20–21 — Boss Rebuild Verification
+### [x] TASK 22 — Save System
 
-- **Weight:** Heavy
-- **Depends on:** HumanRealm foundations.
-- **Goal:** clean shared Boss combat foundation, optional encounter, and main-boss session progression.
-- **Out of scope:** Region 2 content, persistence, Task 22.
-- **Runtime repair:** fixed controller dependencies, finite BossData validation, ordered attacks, collider-safe arena exit, reward delivery state, automatic Player progression resolution, and HP UI lifecycle safety; Play Mode verification remains.
-- **Done when:** manual Play Mode confirms one-hit Boss damage, optional reset/reward, and idempotent main-boss progression.
+- **T22.1 complete:** versioned JSON kernel, safe replacement, backup recovery, and runtime bootstrap.
+- **T22.2 complete:** Soul, five upgrades, Upgrade Cap, equipment ownership/equipping, Regions, and Teleport Stones.
+- **T22.3 complete:** stable LootChest IDs/opened state, conservative transaction-safe autosave, derived completed-region Main Boss suppression, and end-to-end hardening.
+- **Next implementation milestone:** T24 HumanRealm Tileset; T23 Art Bible is already complete.
 
 ## Status legend
 
@@ -53,7 +51,7 @@
 
 ## Persistence
 
-- [ ] T22 — Save System
+- [x] T22 — Save System
 
 ## Asset pipeline
 

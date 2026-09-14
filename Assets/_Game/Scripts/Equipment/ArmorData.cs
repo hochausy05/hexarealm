@@ -6,6 +6,7 @@ namespace HexaRealm.Equipment
     [CreateAssetMenu(fileName = "ArmorData", menuName = "HexaRealm/Equipment/Armor Data")]
     public sealed class ArmorData : ScriptableObject
     {
+        [SerializeField] private string persistentId;
         [SerializeField] private string displayName = "New Armor";
         [SerializeField] private float vitalityBonus;
         [SerializeField] private float attackBonus;
@@ -14,6 +15,7 @@ namespace HexaRealm.Equipment
         [SerializeField] private float rageBonus;
         [SerializeField] private Sprite bodySprite;
 
+        public string PersistentId => persistentId;
         public string DisplayName => displayName;
         public float VitalityBonus => vitalityBonus;
         public float AttackBonus => attackBonus;
@@ -41,8 +43,16 @@ namespace HexaRealm.Equipment
             bodySprite = newBodySprite;
         }
 
+#if UNITY_EDITOR
+        public void SetPersistentIdForAuthoring(string value)
+        {
+            persistentId = NormalizePersistentId(value);
+        }
+#endif
+
         private void OnValidate()
         {
+            persistentId = NormalizePersistentId(persistentId);
             vitalityBonus = SanitizeFinite(vitalityBonus);
             attackBonus = SanitizeFinite(attackBonus);
             defenseBonus = SanitizeFinite(defenseBonus);
@@ -53,6 +63,11 @@ namespace HexaRealm.Equipment
         private static float SanitizeFinite(float value)
         {
             return !float.IsNaN(value) && !float.IsInfinity(value) ? value : 0f;
+        }
+
+        private static string NormalizePersistentId(string value)
+        {
+            return string.IsNullOrWhiteSpace(value) ? string.Empty : value.Trim();
         }
     }
 }

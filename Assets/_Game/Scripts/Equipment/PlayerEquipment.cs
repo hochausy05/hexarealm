@@ -79,6 +79,18 @@ namespace HexaRealm.Equipment
             EquipArmor(null);
         }
 
+        /// <summary>Replaces both equipped slots and rebuilds modifiers once for save restoration.</summary>
+        public void RestoreEquipment(WeaponData weapon, ArmorData armor)
+        {
+            equippedWeapon = weapon;
+            equippedArmor = armor;
+            hasInitializedStartingWeapon = true;
+            hasInitializedStartingArmor = true;
+            RecalculateEquipmentModifiers();
+            RefreshWeaponVisual();
+            RefreshBodyVisual();
+        }
+
         /// <summary>Rebuilds all equipment stat totals from current slots; safe to call repeatedly.</summary>
         public void RecalculateEquipmentModifiers()
         {

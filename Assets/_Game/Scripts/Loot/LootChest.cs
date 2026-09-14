@@ -9,6 +9,7 @@ namespace HexaRealm.Loot
     {
         private enum ChestState { Closed, Granting, Opened }
 
+        [SerializeField] private string persistentId;
         [SerializeField] private LootBundleData lootBundle;
         [SerializeField] private bool autoEquipWeaponReward;
         [SerializeField] private bool autoEquipArmorReward;
@@ -19,11 +20,18 @@ namespace HexaRealm.Loot
         private bool hasLoggedInvalidConfiguration;
 
         public event Action Opened;
+        public static event Action<LootChest> AnyChestOpened;
+
+        public string PersistentId => persistentId;
         public bool IsOpened => state == ChestState.Opened;
 
         private void Awake() => RefreshVisual();
         private void OnEnable() => RefreshVisual();
-        private void OnValidate() => RefreshVisual();
+        private void OnValidate()
+        {
+            persistentId = NormalizePersistentId(persistentId);
+            RefreshVisual();
+        }
 
         public bool IsInteractionAvailable(PlayerInteractor interactor)
         {
@@ -52,7 +60,22 @@ namespace HexaRealm.Loot
             state = ChestState.Opened;
             RefreshVisual();
             Opened?.Invoke();
+            AnyChestOpened?.Invoke(this);
         }
+
+        /// <summary>Replaces persistent state without delivering loot or raising completion/autosave events.</summary>
+        public void RestoreOpenedState(bool opened)
+        {
+            state = opened ? ChestState.Opened : ChestState.Closed;
+            RefreshVisual();
+        }
+
+#if UNITY_EDITOR
+        public void SetPersistentIdForAuthoring(string value)
+        {
+            persistentId = NormalizePersistentId(value);
+        }
+#endif
 
         private void RefreshVisual()
         {
@@ -66,6 +89,17 @@ namespace HexaRealm.Loot
             if (hasLoggedInvalidConfiguration) return;
             hasLoggedInvalidConfiguration = true;
             Debug.LogWarning($"LootChest '{name}' remains closed: assign a non-empty LootBundleData and a valid PlayerLootReceiver.", this);
+        }
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void ResetStaticEvents()
+        {
+            AnyChestOpened = null;
+        }
+
+        private static string NormalizePersistentId(string value)
+        {
+            return string.IsNullOrWhiteSpace(value) ? string.Empty : value.Trim();
         }
     }
 }

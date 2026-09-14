@@ -113,6 +113,24 @@ namespace HexaRealm.Progression
         /// <summary>Unlocks an absolute cap value. Existing upgrades, stats, and Soul remain unchanged.</summary>
         public bool UnlockUpgradeCap(int newCap) => IncreaseUpgradeCapTo(newCap);
 
+        /// <summary>Replaces persistent upgrade inputs directly without spending Soul or raising purchase events.</summary>
+        public void RestoreState(
+            int vitalityCount,
+            int attackCount,
+            int defenseCount,
+            int agilityCount,
+            int rageCount,
+            int upgradeCap)
+        {
+            vitalityUpgradeCount = Mathf.Max(0, vitalityCount);
+            attackUpgradeCount = Mathf.Max(0, attackCount);
+            defenseUpgradeCount = Mathf.Max(0, defenseCount);
+            agilityUpgradeCount = Mathf.Max(0, agilityCount);
+            rageUpgradeCount = Mathf.Max(0, rageCount);
+            currentUpgradeCap = Mathf.Max(0, upgradeCap);
+            SyncUpgradeModifiers();
+        }
+
         public UpgradePurchaseResult TryPurchaseUpgrade(PlayerStatType stat)
         {
             if (!IsKnownStat(stat))

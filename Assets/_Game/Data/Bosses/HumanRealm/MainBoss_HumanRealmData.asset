@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: MainBoss_HumanRealmData
   m_EditorClassIdentifier: HexaRealm.Boss::HexaRealm.Boss.BossData
   displayName: HumanRealm Main Boss
-  maxHealth: 600
+  maxHealth: 60
   attack: 24
   defense: 4
   moveSpeed: 2.4

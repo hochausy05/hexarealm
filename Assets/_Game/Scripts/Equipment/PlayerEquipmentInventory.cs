@@ -10,6 +10,7 @@ namespace HexaRealm.Equipment
         [SerializeField] private PlayerEquipment playerEquipment;
         [SerializeField] private List<WeaponData> ownedWeapons = new List<WeaponData>();
         [SerializeField] private List<ArmorData> ownedArmors = new List<ArmorData>();
+        private bool hasRegisteredStartingEquipment;
 
         public IReadOnlyList<WeaponData> OwnedWeapons => ownedWeapons;
         public IReadOnlyList<ArmorData> OwnedArmors => ownedArmors;
@@ -45,9 +46,28 @@ namespace HexaRealm.Equipment
 
         public void RegisterStartingEquipment()
         {
-            if (playerEquipment == null) return;
+            if (playerEquipment == null || hasRegisteredStartingEquipment) return;
             AddWeapon(playerEquipment.StartingWeapon);
             AddArmor(playerEquipment.StartingArmor);
+            hasRegisteredStartingEquipment = true;
+        }
+
+        /// <summary>Replaces ownership as unique set-like state without invoking loot/reward behavior.</summary>
+        public void RestoreOwnership(IEnumerable<WeaponData> weapons, IEnumerable<ArmorData> armors)
+        {
+            ownedWeapons.Clear();
+            ownedArmors.Clear();
+            hasRegisteredStartingEquipment = true;
+
+            if (weapons != null)
+            {
+                foreach (WeaponData weapon in weapons) AddWeapon(weapon);
+            }
+
+            if (armors != null)
+            {
+                foreach (ArmorData armor in armors) AddArmor(armor);
+            }
         }
 
         private void OnValidate()

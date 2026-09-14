@@ -169867,6 +169867,10 @@ PrefabInstance:
       propertyPath: lootBundle
       value: 
       objectReference: {fileID: 11400000, guid: e5120000000000000000000000000001, type: 2}
+    - target: {fileID: 700000, guid: e5130000000000000000000000000001, type: 3}
+      propertyPath: persistentId
+      value: humanrealm.chest.northern-side-route.001
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -228114,6 +228118,10 @@ PrefabInstance:
       propertyPath: lootBundle
       value: 
       objectReference: {fileID: 11400000, guid: e5120000000000000000000000000001, type: 2}
+    - target: {fileID: 700000, guid: e5130000000000000000000000000001, type: 3}
+      propertyPath: persistentId
+      value: humanrealm.chest.eastern-farm.001
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -231112,6 +231120,10 @@ PrefabInstance:
       propertyPath: lootBundle
       value: 
       objectReference: {fileID: 11400000, guid: e5120000000000000000000000000001, type: 2}
+    - target: {fileID: 700000, guid: e5130000000000000000000000000001, type: 3}
+      propertyPath: persistentId
+      value: humanrealm.chest.western-forest.001
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

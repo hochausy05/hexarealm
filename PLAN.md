@@ -4,12 +4,12 @@
 
 ## CURRENT PHASE
 
-**Phase F — Boss / Region Progression**
+**Phase H — Asset Pipeline**
 
-- Previous milestone: Phase E HumanRealm world foundation complete through Task 19.
-- **Current: Task 21 — HumanRealm Main Boss + Teleport Stone.**
+- Previous milestone: Phase G Persistence complete through Task 22.
+- **Current transition: Phase H Asset Pipeline; Task 23 Art Bible is complete and Task 24 HumanRealm Tileset is next.**
 
-Current goal: prove HumanRealm main-boss region progression using the verified optional-boss framework.
+Current goal: apply the approved Art Bible to the HumanRealm production tileset without reopening the completed Save architecture.
 
 ## Development order
 
@@ -31,9 +31,9 @@ Principles:
 | C — Enemy/Soul | 09-12 | enemy data/AI, Soul, Soul Pillar upgrades | Done |
 | D — Equipment/Loot/Farming | 13-16.5 | weapon, armor, chest loot, respawn, cleanup | Done |
 | E — HumanRealm World | 17-19 | graybox, cave transition, village NPC movement | Done |
-| F — Boss/Region | 20-21 | optional boss, main boss, Teleport Stone | **Current** |
-| G — Persistence | 22 | save/load | Planned |
-| H — Asset Pipeline | 23-25 | art bible, tileset, animation pipeline | Planned |
+| F — Boss/Region | 20-21 | optional boss, main boss, Teleport Stone | Prototype complete; verification pending |
+| G — Persistence | 22 | save/load | Done |
+| H — Asset Pipeline | 23-25 | art bible, tileset, animation pipeline | **Current — T23 done, T24 next** |
 | I — HumanRealm Content | 26-38 | production content, audio/UI, balance | Planned |
 
 ## Phase E — current dependency notes

@@ -1,3 +1,4 @@
+using System;
 using HexaRealm.Combat;
 using UnityEngine;
 
@@ -14,6 +15,10 @@ namespace HexaRealm.Progression
 
         private bool granted;
         private bool configurationErrorLogged;
+
+        public static event Action<RegionBossProgressionReward> AnyProgressionCompleted;
+        public RegionId CompletedRegion => rewardData != null ? rewardData.CompletedRegion : default;
+        public bool HasValidRewardData => rewardData != null && rewardData.IsValid;
 
         private void Awake()
         {
@@ -55,6 +60,20 @@ namespace HexaRealm.Progression
             playerUpgradeProgression.IncreaseUpgradeCapTo(rewardData.UnlockedUpgradeCap);
             granted = true;
             Debug.Log($"Region complete: {rewardData.CompletedRegion}. Teleport Stone acquired; Upgrade Cap: {playerUpgradeProgression.CurrentUpgradeCap}.", this);
+            AnyProgressionCompleted?.Invoke(this);
+        }
+
+        /// <summary>Applies the world consequence of persisted completion without replaying rewards.</summary>
+        public void RestoreCompletedWorldState()
+        {
+            granted = true;
+            gameObject.SetActive(false);
+        }
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void ResetStaticEvents()
+        {
+            AnyProgressionCompleted = null;
         }
 
         private bool ValidateStaticConfiguration()

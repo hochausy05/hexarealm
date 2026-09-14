@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a1c0f2e4d7b4a92b8c3e5f6091a2b34, type: 3}
   m_Name: ExplorerSword
   m_EditorClassIdentifier: HexaRealm.Equipment::HexaRealm.Equipment.WeaponData
+  persistentId: weapon.explorer-sword
   displayName: Explorer Sword
   damage: 5
   attackSpeedMultiplier: 1

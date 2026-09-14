@@ -8,8 +8,8 @@
 - Genre: 2D top-down fantasy action RPG
 - Current region: HumanRealm
 - Current milestone: core player/combat/progression/equipment/loot/farming foundations are implemented
-- Latest completed task: Task 20 — Optional Boss Framework
-- **Current task: Task 21 — HumanRealm Main Boss + Teleport Stone**
+- Latest completed task: Task 22 — Save System
+- **Next implementation milestone: Task 24 — HumanRealm Tileset (Task 23 Art Bible is already complete)**
 
 ## Core loop
 
@@ -28,6 +28,7 @@ Use progressive disclosure. **Do not read every document in full by default.**
 | Need a gameplay/design rule | Search `GAME_DESIGN_CORE.md` for the referenced `GD-*` section only |
 | Need roadmap/dependency context | `PLAN.md` -> current phase only |
 | Need recent implementation history | `PROJECT_CHANGELOG.md` -> latest 1-3 relevant entries only |
+| Need Save/Load architecture | `docs/SAVE_SYSTEM.md` |
 | Need implementation details | Only the directly related scripts/assets/prefabs/scenes |
 
 Never read the full changelog, full design document, or entire `Assets/` tree unless the task explicitly requires it.

@@ -1,21 +1,17 @@
 {
-  "name": "HexaRealm.EditModeTests",
-  "rootNamespace": "HexaRealm.Tests.EditMode",
+  "name": "HexaRealm.SaveIntegration",
+  "rootNamespace": "HexaRealm.SaveIntegration",
   "references": [
+    "HexaRealm.Save",
     "HexaRealm.Combat",
     "HexaRealm.Player",
-    "HexaRealm.Enemy",
     "HexaRealm.Progression",
-    "HexaRealm.Interaction",
     "HexaRealm.Equipment",
     "HexaRealm.Loot",
     "HexaRealm.Boss",
-    "HexaRealm.Save",
-    "HexaRealm.SaveIntegration"
+    "Unity.InputSystem"
   ],
-  "includePlatforms": [
-    "Editor"
-  ],
+  "includePlatforms": [],
   "excludePlatforms": [],
   "allowUnsafeCode": false,
   "overrideReferences": false,
@@ -23,8 +19,5 @@
   "autoReferenced": true,
   "defineConstraints": [],
   "versionDefines": [],
-  "noEngineReferences": false,
-  "optionalUnityReferences": [
-    "TestAssemblies"
-  ]
+  "noEngineReferences": false
 }

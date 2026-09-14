@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d3c1f6a4b2e4c7790d5e6f7a8b9c012, type: 3}
   m_Name: TrainingArmor
   m_EditorClassIdentifier: HexaRealm.Equipment::HexaRealm.Equipment.ArmorData
+  persistentId: armor.training-armor
   displayName: Training Armor
   vitalityBonus: 0
   attackBonus: 0

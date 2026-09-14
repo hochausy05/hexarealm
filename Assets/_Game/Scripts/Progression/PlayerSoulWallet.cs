@@ -38,6 +38,12 @@ namespace HexaRealm.Progression
             return true;
         }
 
+        /// <summary>Restores the authoritative balance without applying reward or spending semantics.</summary>
+        public void RestoreExactSouls(int amount)
+        {
+            SetCurrentSouls(Mathf.Max(0, amount));
+        }
+
         private void SetCurrentSouls(int value)
         {
             int newValue = Mathf.Max(0, value);

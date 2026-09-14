@@ -6,6 +6,7 @@ namespace HexaRealm.Equipment
     [CreateAssetMenu(fileName = "WeaponData", menuName = "HexaRealm/Equipment/Weapon Data")]
     public sealed class WeaponData : ScriptableObject
     {
+        [SerializeField] private string persistentId;
         [SerializeField] private string displayName = "New Weapon";
         [SerializeField, Min(0f)] private float damage;
         [SerializeField] private float attackSpeedMultiplier = 1f;
@@ -14,6 +15,7 @@ namespace HexaRealm.Equipment
         [SerializeField] private Sprite weaponSprite;
         [SerializeField] private Sprite slashVFXSprite;
 
+        public string PersistentId => persistentId;
         public string DisplayName => displayName;
         public float Damage => damage;
         public float AttackSpeedMultiplier => attackSpeedMultiplier;
@@ -41,8 +43,16 @@ namespace HexaRealm.Equipment
             slashVFXSprite = newSlashVFXSprite;
         }
 
+#if UNITY_EDITOR
+        public void SetPersistentIdForAuthoring(string value)
+        {
+            persistentId = NormalizePersistentId(value);
+        }
+#endif
+
         private void OnValidate()
         {
+            persistentId = NormalizePersistentId(persistentId);
             damage = SanitizeNonNegative(damage);
             attackSpeedMultiplier = IsValidAttackSpeedMultiplier(attackSpeedMultiplier)
                 ? attackSpeedMultiplier
@@ -59,6 +69,11 @@ namespace HexaRealm.Equipment
         private static float SanitizeNonNegative(float value)
         {
             return !float.IsNaN(value) && !float.IsInfinity(value) ? Mathf.Max(0f, value) : 0f;
+        }
+
+        private static string NormalizePersistentId(string value)
+        {
+            return string.IsNullOrWhiteSpace(value) ? string.Empty : value.Trim();
         }
     }
 }
